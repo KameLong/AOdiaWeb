@@ -1,0 +1,64 @@
+{
+  "name": "aodiaweb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "6.1.3",
+    "@mui/lab": "^6.0.0-beta.24",
+    "@mui/material": "^6.1.3",
+    "@mui/styled-engine-sc": "^6.4.0",
+    "@mui/styles": "6.1.3",
+    "@mui/x-tree-view": "^7.24.1",
+    "@route-builders/oud-operator": "^3.0.14",
+    "cra-template-pwa-typescript": "2.0.0",
+    "js-store": "^0.0.11",
+    "react": "^19.0.0",
+    "react-color": "^2.19.3",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
+    "react-router-dom": "^6.21.1",
+    "react-transition-group": "^4.4.5",
+    "react-use": "^17.4.3",
+    "sqlweb": "^1.6.2",
+    "styled-components": "^6.1.14"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.2",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.7.3",
+    "vite": "^5.4.8",
+    "workbox-sw": "^7.3.0",
+    "workbox-webpack-plugin": "^7.3.0"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc -b && vite build",
+    "start": "react-scripts start",
+    "build_old": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
