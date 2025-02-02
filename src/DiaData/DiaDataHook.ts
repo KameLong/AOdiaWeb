@@ -102,15 +102,19 @@ export function editLineFile():useLineFileReturn{
                 const ed=editDiagram(lineFile,setLineFile,i);
                 for(let j=0;j<lineFile.diagram[i].trains[0].length;j++){
                     const train=ed.getEditTrain(0,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
-                    train.setTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
+                        return {...prev,times:newTimes};
+                    });
                 }
                 for(let j=0;j<lineFile.diagram[i].trains[1].length;j++){
                     const train=ed.getEditTrain(1,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
-                    train.setTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
+                        return {...prev,times:newTimes};
+                    });
                 }
             }
 
@@ -124,15 +128,19 @@ export function editLineFile():useLineFileReturn{
                 const ed=editDiagram(lineFile,setLineFile,i);
                 for(let j=0;j<lineFile.diagram[i].trains[0].length;j++){
                     const train=ed.getEditTrain(0,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,1);
-                    train.setTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,1);
+                        return {...prev,times:newTimes};
+                    });
                 }
                 for(let j=0;j<lineFile.diagram[i].trains[1].length;j++){
                     const train=ed.getEditTrain(1,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,1);
-                    train.setTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,1);
+                        return {...prev,times:newTimes};
+                    });
                 }
             }
         }
