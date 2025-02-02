@@ -34,7 +34,7 @@ export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
         const fn=()=>{
             console.log("SaveButtonClicked");
             webOuDia.setDiaData(prev=>{
-                const newDiaData=[...prev];
+                const newDiaData={...prev};
                 newDiaData[diaIndex]={...newDiaData[diaIndex]};
                 newDiaData[diaIndex].trainType=trainTypes;
                 return newDiaData;

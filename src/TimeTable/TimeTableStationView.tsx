@@ -12,7 +12,6 @@ interface TimeTableStationViewProp{
 
 export function TimeTableStationView({stations,direction,lineHeight,onDblClick}:TimeTableStationViewProp){
     const stationList=(direction===0?stations:stations.toReversed());
-    console.log(stationList);
     const StationView=(station:Station,index:number)=>{
         if (station.showArr[direction]&&station.showDep[direction]) {
             return (

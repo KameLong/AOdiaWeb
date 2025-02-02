@@ -17,6 +17,16 @@ export function HelpPage({webOuDia}:{webOuDia:WebOuDia}){
                     <ListItem>
                         <div>
                             <Typography variant={'h6'} component="div">
+                                2025/02/02 v0.1.1
+                            </Typography>
+                            <Typography component="div" sx={{ml: 2}}>
+                                駅編集機能を実装
+                            </Typography>
+                        </div>
+                    </ListItem>
+                    <ListItem>
+                        <div>
+                            <Typography variant={'h6'} component="div">
                                 2025/02/02 v0.1.0
                             </Typography>
                             <Typography component="div" sx={{ml: 2}}>

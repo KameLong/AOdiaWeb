@@ -21,6 +21,9 @@ const getDA = (stopTime: StationTime) => {
 }
 const diagramStartTime=3600*3;
 function diagramTime(time:number):number{
+    if(time<0){
+        return time;
+    }
     if(time<diagramStartTime){
         return time+24*3600;
     }
@@ -42,7 +45,6 @@ const makeDiagramLine = (trips: DiagramTrip[], routeStations: DiagramStation[],d
             stationIndexArray.reverse();
         }
         for(let i of stationIndexArray){
-        // for (let i = 0; i < stopTimes.length; i++) {
             const st = stopTimes[i];
             if (st.ariTime >= 0) {
                 diagramLine.points.push({
@@ -57,6 +59,7 @@ const makeDiagramLine = (trips: DiagramTrip[], routeStations: DiagramStation[],d
                 });
             }
         }
+        console.log(diagramLine);
         diagramLines.push(diagramLine);
     })
     return diagramLines;
