@@ -246,7 +246,7 @@ export class DiagramCanvas{
     DrawStationAxis(stations:DiagramStation[]){
         for (let i = 0; i < stations.length; i++) {
             let width=1;
-            if(stations[i].main){
+            if(stations[i].station.isMajor){
                 width=2;
             }
             if(i===0||i===stations.length-1){
@@ -292,8 +292,9 @@ export class DiagramCanvas{
         const stationViewWidth=80*this.transform.SCALE;
         this.ctx.beginPath();
         this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.rect(0, this.transform.getCanvasY(this.diaRect.yStart-600), stationViewWidth, this.transform.getCanvasY(this.diaRect.yEnd+600));
+        this.ctx.rect(0, 0, stationViewWidth, this.ctx.canvas.height);
         this.ctx.fill();
+
         this.ctx.beginPath();
         this.ctx.strokeStyle = "#303030";
         this.ctx.lineWidth =2;
@@ -303,7 +304,7 @@ export class DiagramCanvas{
 
         for(let station of routeStations){
             let width=1;
-            if(station.main){
+            if(station.station.isMajor){
                 width=2;
             }
             if(routeStations[0]===station||routeStations.slice(-1)[0]===station){

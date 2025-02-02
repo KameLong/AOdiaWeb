@@ -1,38 +1,42 @@
-import {Box, Button, Checkbox, Divider, FormControlLabel, Paper, TextField, Typography} from "@mui/material";
+import {
+    Box, Button, Checkbox, Divider, FormControl, FormControlLabel, Input, InputLabel, MenuItem, Paper,
+    Select, TextField, Typography
+} from "@mui/material";
 import {WebOuDia} from "../App.tsx";
 import React, {useEffect} from "react";
-import {LineFile, Station} from "../DiaData/DiaData.ts";
+import {LineFile, Station, TrainType} from "../DiaData/DiaData.ts";
 import {useNavigate} from "react-router-dom";
 import Add from "@mui/icons-material/Add";
 import {Delete} from "@mui/icons-material";
-
-interface StationEditPageProps{
+import { SketchPicker } from "react-color";
+import {ColorPickerKL} from "../CMN/ColorPicker.tsx";
+import SelectInput from "@mui/material/Select/SelectInput";
+interface TrainTypeEditPageProps{
     webOuDia: WebOuDia;
 }
 
 
-export function StationEditPage({webOuDia}:StationEditPageProps){
+export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
     const diaIndex=0;
     const navigate = useNavigate();
-    const [stations,setStations]=React.useState<Station[]>(webOuDia.diaData[diaIndex].stations);
-    useEffect(()=>{
-        if(stations.length===0){
-            addStation(0);
-        }
-    },[stations.length]);
+    const [trainTypes,setTrainTypes]=React.useState<TrainType[]>(webOuDia.diaData[diaIndex].trainType);
     useEffect(()=> {
-        setStations(webOuDia.diaData[diaIndex].stations);
+        setTrainTypes(webOuDia.diaData[diaIndex].trainType);
         console.log(webOuDia.diaData[0]);
     },[webOuDia.diaData[0]]);
-    
+    useEffect(()=>{
+        if(trainTypes.length===0){
+            addStation(0);
+        }
+    },[trainTypes.length]);
+
     useEffect(()=>{
         const fn=()=>{
             console.log("SaveButtonClicked");
             webOuDia.setDiaData(prev=>{
-                console.log(prev[0].stations);
                 const newDiaData=[...prev];
                 newDiaData[diaIndex]={...newDiaData[diaIndex]};
-                newDiaData[diaIndex].stations=stations;
+                newDiaData[diaIndex].trainType=trainTypes;
                 return newDiaData;
             });
         };
@@ -40,58 +44,45 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
         return () => webOuDia.webOuDiaEvent.removeEventListener("onSaveButtonClicked", fn);
     },[webOuDia.webOuDiaEvent]);
 
-    useEffect(()=>{
-        //チェックがついている駅を削除します。
-        const fn=()=>{
-            setStations(prev=>{
-                return prev.filter((station)=>!station.checked);
-            })
-        };
-        webOuDia.webOuDiaEvent.addEventListener("onDeleteButtonClicked", fn);
-        return () => webOuDia.webOuDiaEvent.removeEventListener("onDeleteButtonClicked", fn);
-    },[webOuDia.webOuDiaEvent]);
-
-    useEffect(()=>{
-        webOuDia.setShowDeleteIcon(stations.filter((station)=>station.checked).length>0);
-    },[stations.filter((station)=>station.checked).length]);
 
 
 
-    function setArr(index:number,direct:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].showArr[direct]=value;
-            return newStations;
-        });
-    }
-    function setDep(index:number,direct:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].showDep[direct]=value;
-            return newStations;
-        });
-    }
+
+    // function setArr(index:number,direct:number,value:boolean){
+    //     setStations(prev=>{
+    //         const newStations=[...prev];
+    //         newStations[index].showArr[direct]=value;
+    //         return newStations;
+    //     });
+    // }
+    // function setDep(index:number,direct:number,value:boolean){
+    //     setStations(prev=>{
+    //         const newStations=[...prev];
+    //         newStations[index].showDep[direct]=value;
+    //         return newStations;
+    //     });
+    // }
     function setMajor(index:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].isMajor=value;
-            return newStations;
-        });
+        // setStations(prev=>{
+        //     const newStations=[...prev];
+        //     newStations[index].isMajor=value;
+        //     return newStations;
+        // });
     }
 
     function addStation(index:number){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations.splice(index,0,{
-                name:"",
-                showDep:[true,true],
-                showArr:[false,false],
-                isMajor:false,
-                branchStation:-1,
-                checked:false
-            });
-            return newStations;
-        });
+        // setStations(prev=>{
+        //     const newStations=[...prev];
+        //     newStations.splice(index,0,{
+        //         name:"",
+        //         showDep:[true,true],
+        //         showArr:[false,false],
+        //         isMajor:false,
+        //         branchStation:-1,
+        //         checked:false
+        //     });
+        //     return newStations;
+        // });
         webOuDia.setDiaData((prev:LineFile[])=>{
             const newDiaData=[...prev];
             newDiaData[diaIndex]={...newDiaData[diaIndex]};
@@ -110,20 +101,28 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
         //列車の駅情報にも追加
     }
     function deleteStation(index:number){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations.splice(index,1);
-            if(newStations.length===0){
-                newStations.push({
-                    name:"",
-                    showDep:[true,true],
-                    showArr:[false,false],
-                    isMajor:false,
-                    branchStation:-1,
-                    checked:false
-                });
-            }
-            return newStations;
+        // setStations(prev=>{
+        //     const newStations=[...prev];
+        //     newStations.splice(index,1);
+        //     if(newStations.length===0){
+        //         newStations.push({
+        //             name:"",
+        //             showDep:[true,true],
+        //             showArr:[false,false],
+        //             isMajor:false,
+        //             branchStation:-1,
+        //             checked:false
+        //         });
+        //     }
+        //     return newStations;
+        // });
+    }
+
+    function setTrainType(type:TrainType,index:number){
+        setTrainTypes(prev=>{
+            const newTrainTypes=[...prev];
+            newTrainTypes[index]=type;
+            return newTrainTypes;
         });
     }
 
@@ -132,7 +131,7 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
         <div >
             <Box sx={{pb:10}}>
 
-                {stations.map((station,index)=>{
+                {trainTypes.map((trainType:TrainType,index)=>{
                     return(
                         <React.Fragment key={index}>
                             <Box
@@ -149,148 +148,111 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
                                     <Add></Add>
                                 </Button>
                             </Box>
-                            <Paper  sx={{m: 1, padding: 2,background: (station.checked ? "lightYellow":"white")}}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                            }}
-                        >
+                            <Paper sx={{m: 1, padding: 2}}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
 
+                                    <TextField
+                                        size={'small'}
+                                        label="種別名"
+                                        value={trainType.name}
+                                        onInput={(event) => {
+                                            setTrainType({...trainType, name: (event.target as HTMLInputElement).value}, index);
+                                        }}
+                                        onFocus={(event) => {
+                                            console.log(event);
+                                            if (index === trainTypes.length - 1) {
+                                                addStation(index + 1);
+                                            }
+                                        }}
+                                        fullWidth
+                                        margin="dense"
+                                    />
+                                    <TextField
+                                        size={'small'}
+                                        sx={{ml: 2}}
+                                        label="種別略称"
+                                        value={trainType.shortName}
+                                        onInput={(event) => {
+                                            setTrainType({...trainType, shortName: (event.target as HTMLInputElement).value}, index);
+                                        }}
+                                        fullWidth
+                                        margin="dense"
+                                    />
 
-                            <Typography sx={{mr:2}} >{index}</Typography>
-
-
-                            <TextField
-                                label="駅名"
-                                value={station.name}
-                                onInput={(event) => {
-                                    setStations(prev => {
-                                        const newStations = [...prev];
-                                        newStations[index].name = (event.target as HTMLInputElement).value;
-                                        return newStations;
-                                    });
-                                }}
-                                onFocus={(event) => {
-                                    console.log(event);
-                                    if(index===stations.length-1) {
-                                        addStation(index+1);
-                                    }
-                                }}
-                                fullWidth
-                                margin="dense"
-                            />
-                            <Button onClick={()=>deleteStation(index)}>
-                                <Delete></Delete>
-                            </Button>
+                                    <Button onClick={() => deleteStation(index)}>
+                                        <Delete></Delete>
+                                    </Button>
                                 </Box>
-                            <Divider></Divider>
-                            <span style={{marginRight: 10}}>着時刻表示</span>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={station.showArr[0]}
-                                        onChange={() => {
-                                            setArr(index, 0, !station.showArr[0]);
+                                <Divider></Divider>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <span>文字色</span>
+                                    <ColorPickerKL style={{flexGrow:'1', height: '30px', margin: '5px 10px'}}
+                                                   color={trainType.trainColor}
+                                                   onChange={(color) => {
+                                                       setTrainType({...trainType, trainColor: color}, index);
+                                                   }}></ColorPickerKL>
+                                    <span style={{marginLeft:'10px'}}>ダイヤ色</span>
+                                    <ColorPickerKL style={{flexGrow:'1', height: '30px', margin: '5px 10px'}}
+                                                   color={trainType.trainColor}
+                                                   onChange={(color) => {
+                                                       setTrainType({...trainType, trainColor: color}, index);
+                                                   }}></ColorPickerKL>
+                                </Box>
+                                <Divider></Divider>
+                                <FormControl sx={{mt:2}} fullWidth>
+                                    <InputLabel id="demo-simple-select-label">ダイヤ線スタイル</InputLabel>
+                                    <Select
+                                        size={'small'}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={trainType.lineType}
+                                        label="ダイヤ線スタイル"
+                                        onChange={(event)=>{
+                                            setTrainType({...trainType, lineType: event.target.value as number}, index);
                                         }}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label={"上り"}
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={station.showArr[1]}
-                                        onChange={() => {
-                                            setArr(index, 1, !station.showArr[1]);
-                                        }}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="下り"
-                            />
-                            <Divider></Divider>
-                            <span style={{marginRight: 10}}>発時刻表示</span>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={station.showDep[0]}
-                                        onChange={() => {
-                                            setDep(index, 0, !station.showDep[0]);
-                                        }}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label="上り"
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={station.showDep[1]}
-                                        onChange={() => {
-                                            setDep(index, 1, !station.showDep[1]);
-                                        }}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label={("下り")}
-                            />
-                            <Divider></Divider>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={station.isMajor}
-                                        onChange={() => {
-                                            setMajor(index, !station.isMajor);
-                                        }}
-                                        name="checked"
-                                        color="primary"
-                                    />
-                                }
-                                label={"主要駅"}
-                            />
-                        </Paper>
+                                    >
+                                        <MenuItem value={0}>実線</MenuItem>
+                                        <MenuItem value={20}>破線</MenuItem>
+                                        <MenuItem value={10}>点線</MenuItem>
+                                        <MenuItem value={30}>一点鎖線</MenuItem>
+                                    </Select>
+                                </FormControl>
 
-                    </React.Fragment>
+                                <Divider></Divider>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={trainType.lineWeight===2}
+                                            onChange={(event) => {
+                                                setTrainType({...trainType, lineWeight: event.target.checked?2:1}, index);
+                                            }}
+                                            name="checked"
+                                            color="primary"
+                                        />
+                                    }
+                                    label={"ダイヤ線を太線にする"}
+                                />
+                            </Paper>
+
+                        </React.Fragment>
                     )
                 })}
-                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', m: 2 }}>
-                    {/*<Button onClick={()=>{*/}
-                    {/*    const stationID=RandomID();*/}
-                    {/*    const station:StationDTO={*/}
-                    {/*        stationID:stationID,*/}
-                    {/*        companyId:companyID,*/}
-                    {/*        name:"駅名",*/}
-                    {/*        lat:35,*/}
-                    {/*        lon:135*/}
-                    {/*    };*/}
-                    {/*    setCompany(prev=>{*/}
-                    {/*        const newCompany={...prev};*/}
-                    {/*        newCompany.stations[stationID]=station;*/}
-                    {/*        return newCompany;*/}
-                    {/*    });*/}
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', m: 2}}>
 
-
-                    {/*    setRoute(prev=>{*/}
-                    {/*        const newRoute={...prev};*/}
-                    {/*        newRoute.routeStations.push({*/}
-                    {/*            routeStationId:RandomID(),*/}
-                    {/*            stationId:stationID,*/}
-                    {/*            showStyle:(1<<8)+(1),*/}
-
-                    {/*        });*/}
-                    {/*        return newRoute;*/}
-                    {/*    })*/}
-                    {/*}}>*/}
-                    {/*    <Add fontSize={"large"}></Add>*/}
-                    {/*</Button>*/}
                 </Box>
             </Box>
 

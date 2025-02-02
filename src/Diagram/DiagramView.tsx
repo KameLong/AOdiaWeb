@@ -1,16 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {DiagramData, DiagramStation, DiagramTrip} from "./DiagramData";
-import {useParams} from "react-router-dom";
 import {
-    DiaData,
-    DiagramDataDTO,
-    fetchGzipJson,
-    RouteDTO,
-    RouteInfo,
-    StationDTO,
-    StopTimeDTO,
-    TrainDTO,
-    TrainTypeDTO
+    StationTime
 } from "../DiaData/DiaData";
 import {DiagramCanvas, DiagramLine, DiagramTransformC, Point} from "./DiagramCanvas";
 
@@ -250,10 +241,9 @@ export function DiagramView({routeStations, downLines, upLines}:DiagramViewProps
 
 
 
-const hasTime=(stopTime:StopTimeDTO)=>{
+const hasTime=(stopTime:StationTime)=>{
     return stopTime.depTime>=0||stopTime.ariTime>=0;
 }
-
 
 interface DiagramTransform{
     x:number;
@@ -261,9 +251,6 @@ interface DiagramTransform{
     xScale:number;
     yScale:number;
 }
-
-
-
 interface Gesture{
     isDrag:boolean;
     sPos:number[];

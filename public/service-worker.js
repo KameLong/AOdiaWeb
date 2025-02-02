@@ -5,14 +5,11 @@ const appShellFiles = [
     './index.html',
     './app.js',
     './app.css',
-    './images/mps-icon-128-16x16.png',
-    './images/mps-icon-128-32x32.png',
-    './images/mps-icon-128-48x48.png',
-    './images/mps-icon-128-64x64.png',
-    './images/mps-icon-128-128x128.png',
-    './lib/lodash/full.min.js',
-    './lib/pdfjs/pdf.js',
-    './lib/pdfjs/pdf.worker.js'
+    './manifest.json',
+    './favicon.ico',
+    './fonts/DiaPro-Bold.ttf',
+    './fonts/DiaPro-Regular.ttf',
+    './fonts/Notosans-Regular.ttf',
 ]
 const otherFiles = []
 const contentToCache = appShellFiles.concat(otherFiles)
@@ -32,17 +29,17 @@ self.addEventListener('install', function (evt) {
 
 
 self.addEventListener('fetch', function (evt) {
-    evt.respondWith(
-        caches.match(evt.request).then(function (r) {
-            console.log('[Service Worker] Fetching resource: ' + evt.request.url)
-            // we don't store falsy objects, so '||' works fine here.
-            return r || fetch(evt.request).then(function (response) {
-                return caches.open(cacheName).then(function (cache) {
-                    console.log('[Service Worker] Caching new resource: ' + evt.request.url)
-                    cache.put(evt.request, response.clone())
-                    return response
-                })
-            })
-        })
-    )
+    // evt.respondWith(
+    //     caches.match(evt.request).then(function (r) {
+    //         console.log('[Service Worker] Fetching resource: ' + evt.request.url)
+    //         // we don't store falsy objects, so '||' works fine here.
+    //         return r || fetch(evt.request).then(function (response) {
+    //             return caches.open(cacheName).then(function (cache) {
+    //                 console.log('[Service Worker] Caching new resource: ' + evt.request.url)
+    //                 cache.put(evt.request, response.clone())
+    //                 return response
+    //             })
+    //         })
+    //     })
+    // )
 })

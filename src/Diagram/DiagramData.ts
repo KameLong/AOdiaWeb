@@ -1,13 +1,18 @@
-import {RouteStationDTO, StationDTO, StopTimeDTO, TrainTypeDTO, TripDTO} from "../DiaData/DiaData";
+import {Station, Train, TrainType} from "../DiaData/DiaData.ts";
 
-export interface DiagramStation extends RouteStationDTO {
-    stationTime: number
-    station: StationDTO;
+export interface DiagramStation {
+    stationTime: number;
+    station:Station;
 }
+export interface DiagramTrip{
+    stopTimes: DiagramStopTime[];
+    trainType: TrainType;
+    train:Train;
+}
+export interface DiagramStopTime{
+    depTime: number;
+    ariTime: number;
 
-export interface DiagramTrip extends TripDTO {
-    stopTimes: StopTimeDTO[];
-    trainType: TrainTypeDTO;
 }
 
 export interface DiagramData {

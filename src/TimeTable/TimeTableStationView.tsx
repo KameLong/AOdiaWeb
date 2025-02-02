@@ -1,6 +1,6 @@
-import {Station} from "../../DiaData/NewData.ts";
 import {TimeTableTimeView} from "./TimeTableTimeView.tsx";
 import {MatchTextLabel} from "./MatchTextLabel.tsx";
+import {Station} from "../DiaData/DiaData.ts";
 
 
 interface TimeTableStationViewProp{
@@ -11,11 +11,12 @@ interface TimeTableStationViewProp{
 }
 
 export function TimeTableStationView({stations,direction,lineHeight,onDblClick}:TimeTableStationViewProp){
-    const stationList=direction===0?stations:stations.toReversed();
+    const stationList=(direction===0?stations:stations.toReversed());
+    console.log(stationList);
     const StationView=(station:Station,index:number)=>{
-        if (station.isShowAri(direction)&&station.isShowDep(direction)) {
+        if (station.showArr[direction]&&station.showDep[direction]) {
             return (
-                <div key={station.stationId}
+                <div key={index}
                      style={{
                         height: `${lineHeight * 2 + 1}px`,
                         lineHeight: `${lineHeight * 2 + 1}px`,
@@ -25,12 +26,12 @@ export function TimeTableStationView({stations,direction,lineHeight,onDblClick}:
                 }}
                      onDoubleClick={()=>onDblClick?.(station,index)}
                 ><MatchTextLabel>
-                        {station.stationName}
+                        {station.name}
                 </MatchTextLabel></div>
             )
         }else{
             return (
-                <div key={station.stationId}
+                <div key={station.name}
                      style={{
                         lineHeight: `${lineHeight }px`,
                         height: `${lineHeight }px`,
@@ -40,7 +41,7 @@ export function TimeTableStationView({stations,direction,lineHeight,onDblClick}:
                     }}
                         onDoubleClick={()=>onDblClick?.(station,index)}
                 ><MatchTextLabel>
-                    {station.stationName}
+                    {station.name}
                 </MatchTextLabel></div>
             )
         }

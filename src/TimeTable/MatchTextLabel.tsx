@@ -1,7 +1,7 @@
 import {createRef, useEffect} from "react";
 import styles from "./timetable.module.scss";
 
-export function MatchTextLabel({children}){
+export function MatchTextLabel({children,style}:{children:React.ReactNode,style?:React.CSSProperties}){
     const ref=createRef<HTMLSpanElement>();
     useEffect(() => {
         const element = ref.current;
@@ -11,7 +11,7 @@ export function MatchTextLabel({children}){
         }
     }, [children]);
 
-    return <span style={{display:"inline-block",overflow:'hidden'}} className={styles.matchTextLabel} ref={ref}>
+    return <span style={{...style,display:"inline-block",overflow:'hidden'}} className={styles.matchTextLabel} ref={ref}>
         {children}
     </span>
 

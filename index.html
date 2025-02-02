@@ -8,12 +8,26 @@
     <meta name="format-detection" content="telephone=no">
 
     <link rel="manifest" href="/manifest.json" />
-    <title>すじらう(Sujiraw)</title>
+    <title>WebDia</title>
   </head>
-  <body>
+  <body style="background:#EEE">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
+  <script>
+    // enable service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none', scope: './' })
+              .then((reg) => {
+                // registration worked
+                console.log('Registration succeeded. Scope is ' + reg.scope)
+              }).catch((error) => {
+        // registration failed
+        console.log('Registration failed with ' + error)
+      })
+    }
+
+  </script>
 
   </body>
 </html>

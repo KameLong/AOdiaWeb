@@ -1,7 +1,6 @@
-import {Station, StationTime} from "../../DiaData/NewData.ts";
 import styles from "./timetable.module.scss";
-import {TimeTablePageSetting} from "./TestPage.tsx";
-import {redirect} from "react-router-dom";
+import {Station, StationTime} from "../DiaData/DiaData.ts";
+import {TimeTablePageSetting} from "./TimeTableView.tsx";
 interface TimeTableTimeViewProps {
     direction: number;
     stationTime:StationTime
@@ -32,7 +31,7 @@ function getBetterTime(time1:number,time2:number):number{
 
 export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,direction}:TimeTableTimeViewProps){
     // const divWidth=setting.fontSize*2.2;
-    const isBothShow=station.isShowDep(direction)&&station.isShowAri(direction);
+    const isBothShow=station.showDep[direction]&&station.showArr[direction];
     const lineHeight=setting.lineHeight*setting.fontSize;
 
     let ariStr:string="";
@@ -43,20 +42,20 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
             depStr="‥";
             ariStr="‥";
             break;
-        case 2:
+        case 20:
             depStr="⇂";
             ariStr="⇂";
             break;
-        case 3:
+        case 30:
             depStr="║";
             ariStr="║";
             break;
         default:
             if(isBothShow){
                 //発着表示の時
-                depStr=time2Str(stationTime.depTime.time);
+                depStr=time2Str(stationTime.depTime);
                 //発着表示の時、かつ発時刻が存在しないときの処理、aftStationが運行なしなら運行なし、経由なしなら経由なし
-                if(stationTime.depTime.time<0){
+                if(stationTime.depTime<0){
                     if(aftTime){
                         if(aftTime.stopType==0){
                             depStr="‥";
@@ -68,9 +67,9 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
                     }
                 }
 
-                ariStr=time2Str(stationTime.ariTime.time);
+                ariStr=time2Str(stationTime.ariTime);
                 //発着表示の時、かつ着時刻が存在しないときの処理、befStationが運行なしなら運行なし、経由なしなら経由なし
-                if(stationTime.ariTime.time<0){
+                if(stationTime.ariTime<0){
                     if(befTime){
                         if(befTime.stopType==0){
                             ariStr="‥";
@@ -84,26 +83,26 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
 
 
             }else{
-                depStr=time2Str(getBetterTime(stationTime.depTime.time,stationTime.ariTime.time));
-                ariStr=time2Str(getBetterTime(stationTime.ariTime.time,stationTime.depTime.time));
+                depStr=time2Str(getBetterTime(stationTime.depTime,stationTime.ariTime));
+                ariStr=time2Str(getBetterTime(stationTime.ariTime,stationTime.depTime));
             }
             break;
     }
 
     return <div>
-        {station.isShowAri(direction)?
+        {station.showArr[direction]?
             <div className={styles.time} style={{
                 lineHeight: `${lineHeight}px`,
                 height: `${lineHeight}px`}}>
                 {ariStr}
             </div>:null
         }
-        {station.isShowAri(direction)&&station.isShowDep(direction) ?
+        {station.showArr[direction]&&station.showDep[direction] ?
             <div style={{borderBottom:'1px solid black',height:'1px'}}>
             </div>:null
         }
 
-        {station.isShowDep(direction)?
+        {station.showDep[direction]?
             <div className={styles.time} style={{lineHeight: `${lineHeight}px`,height: `${lineHeight}px`}}>
             {depStr}
             </div>:null

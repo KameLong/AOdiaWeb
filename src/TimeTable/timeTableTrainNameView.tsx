@@ -1,38 +1,33 @@
-import {Train, Station} from "../../DiaData/NewData.ts";
-import {StationDTO, TrainTypeDTO} from "../../DiaData/DiaData.ts";
-import {TimeTablePageSetting} from "./TestPage.tsx";
-import styles from "./timetable.module.scss"
 import React from "react";
 import {MatchTextLabel} from "./MatchTextLabel.tsx";
+import {Train, TrainType} from "../DiaData/DiaData.ts";
+import {TimeTablePageSetting} from "./TimeTableView.tsx";
 
 interface TimeTableTrainNameViewProps {
     train:Train;
-    routeStation:Station[]
     setting:TimeTablePageSetting;
-    stations:{[key:number]:StationDTO}
-    types:{[key:number]:TrainTypeDTO}
+    type:TrainType;
 
 
 }
 
-export function TimeTableTrainNameView({train,routeStation,setting,types}:TimeTableTrainNameViewProps){
+export function TimeTableTrainNameView({train,setting,type}:TimeTableTrainNameViewProps){
     const viewHeight=setting.fontSize*4;
     const divWidth=setting.fontSize*2.2;
 
-    const trainTypes=types[train.trips[0].trainTypeId];
 
 
     return(
-        <div style={{borderRight: '1px solid black', width: divWidth,height:100, color: trainTypes.color,borderBottom: '2px gray solid'}}>
+        <div style={{lineHeight:setting.lineHeight,borderRight: '1px solid black', width: divWidth,height:100, color: type.trainColor,borderBottom: '2px gray solid'}}>
             <MatchTextLabel>
                 {"　"}
             </MatchTextLabel>
             <div style={{borderBottom: '1px gray solid'}}></div>
-            <MatchTextLabel>
-                {trainTypes.name}
+            <MatchTextLabel style={{height:setting.lineHeight*setting.fontSize}}>
+                {type.shortName}
             </MatchTextLabel>
             <div style={{borderBottom: '1px gray solid'}}></div>
-            <div style={{height: viewHeight}} className={styles.matchTextLabel}>
+            <div style={{height: viewHeight}} >
             </div>
         </div>
     )

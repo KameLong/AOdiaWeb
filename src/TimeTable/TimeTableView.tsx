@@ -1,22 +1,22 @@
-import {useMakeRouteTimeTableData, useGetTimeTableData} from "./MakeRouteTimeTableDataHook.ts";
 import React, {useEffect, useState} from "react";
 import {TimeTableTrainView} from "./TimeTableTrainView.tsx";
-import {HolizontalBoxList} from "../HolizontalBoxList.tsx";
+import {HolizontalBoxList} from "./HolizontalBoxList.tsx";
 import {TimeTableStationView} from "./TimeTableStationView.tsx";
 import {TimeTableTrainNameView} from "./timeTableTrainNameView.tsx";
-import {LineData} from "../../DiaData/NewData.ts";
+import {LineFile} from "../DiaData/DiaData.ts";
+
 export interface TimeTablePageSetting{
     fontSize:number,
     lineHeight:number,
 }
 
 interface TimeTableViewProp{
-    timetableData:LineData;
+    lineFile:LineFile;
+    diaIdx:number;
     direction:number;
     onStationSelected?:(stationId:number,stationIndex:number)=>void;
 }
-
-export default function TimeTableView({timetableData,direction,onStationSelected}:TimeTableViewProp) {
+export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:TimeTableViewProp) {
     const [timetableSetting,setTimetableSetting] = useState<TimeTablePageSetting>({
         fontSize:13,
         lineHeight:1.1
@@ -25,21 +25,17 @@ export default function TimeTableView({timetableData,direction,onStationSelected
     let setScrollX:undefined|((scrollX:number)=>void)=undefined;
     let setScrollX2:undefined|((scrollX:number)=>void)=undefined;
 
-    useEffect(() => {
-        console.log(timetableData);
-    }, [timetableData]);
-
     const lineHeight=timetableSetting.lineHeight*timetableSetting.fontSize;
     const fontSize=timetableSetting.fontSize;
     const width=2.2*timetableSetting.fontSize;
     const stationNameWidth=4*timetableSetting.fontSize;
 
-    const trains=direction===0?timetableData.downTrains:timetableData.upTrains;
+    const trains=lineFile.diagram[diaIdx].trains[direction];
 
-
-    if(timetableData.downTrains.length==0){
+    if(trains.length==0){
         return(<div></div>)
     }
+    console.log(lineFile.stations);
 
     const TrainView = ( index:number, style:any) => {
         const train=trains[index];
@@ -48,20 +44,21 @@ export default function TimeTableView({timetableData,direction,onStationSelected
             <div key={index} className={selected?"selected":""} style={style}>
                 <TimeTableTrainView train={train}
                                     direction={direction}
-                                    routeStation={timetableData.stationList}
-                                    types={timetableData.trainTypes}
-                                    stations={timetableData.stationInfo}
+                                    station={lineFile.stations}
+                                    type={lineFile.trainType[train.trainTypeId]}
                                     setting={timetableSetting}>
                 </TimeTableTrainView>
             </div>
         );
     }
     const TrainNameView = ( index:number, style:any) => {
-        const trip=trains[index];
+        const train=trains[index];
         const selected=false;
         return (
             <div key={index} className={selected?"selected":""} style={style}>
-                <TimeTableTrainNameView train={trip} routeStation={timetableData.stationList} types={timetableData.trainTypes} stations={timetableData.stationInfo}
+                <TimeTableTrainNameView
+                    train={train}
+                    type={lineFile.trainType[train.trainTypeId]}
                                         setting={timetableSetting}></TimeTableTrainNameView>
             </div>
         );
@@ -111,12 +108,13 @@ export default function TimeTableView({timetableData,direction,onStationSelected
                         background: "white"
 
                     }} id="stationViewLayout">
-                        <TimeTableStationView stations={timetableData.stationList}
-                                              direction={direction}
-                                              lineHeight={lineHeight}
-                                              onDblClick={(station, index: number) => {
-                                          onStationSelected?.(station.stationId, index);
-                                      }}
+                        <TimeTableStationView
+                            stations={lineFile.stations}
+                            direction={direction}
+                            lineHeight={lineHeight}
+                            onDblClick={(station, index: number) => {
+                                // onStationSelected?.(station.stationId, index);
+                            }}
                         />
                     </div>
                 </div>
