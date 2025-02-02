@@ -175,12 +175,51 @@ export function DiagramView({routeStations, downLines, upLines}:DiagramViewProps
                 });
             }
         };
+        const onMouseWheel=(e:WheelEvent)=>{
+            if(e.ctrlKey){
+                if(e.deltaY>0){
+                    //マウスを置いてある場所を中心に拡大
+                    const y=e.clientY-ref.current.getBoundingClientRect().y;
+                    transform.yScale*=1.1;
+                    transform.y=(transform.y+y)*1.1-y;
+                    ref.current?.scrollTo(transform.x, transform.y);
+                    requestAnimationFrame(()=>render(new DiagramTransformC(transform.x,transform.y,transform.xScale,transform.yScale,SCALE)));
+                }
+                if(e.deltaY<0){
+                    transform.yScale/=1.1;
+                    const y=e.clientY-ref.current.getBoundingClientRect().y;
+                    transform.y=(transform.y+y)/1.1-y;
+                    ref.current?.scrollTo(transform.x, transform.y);
+                    requestAnimationFrame(()=>render(new DiagramTransformC(transform.x,transform.y,transform.xScale,transform.yScale,SCALE)));
+                }
+                if(e.deltaX>0){
+                    const x=e.clientX-ref.current.getBoundingClientRect().x;
+                    transform.x=(transform.x+x)*1.1-x;
+                    transform.xScale*=1.1;
+                    ref.current?.scrollTo(transform.x, transform.y);
+                    requestAnimationFrame(()=>render(new DiagramTransformC(transform.x,transform.y,transform.xScale,transform.yScale,SCALE)));
+                }
+                if(e.deltaX<0){
+                    transform.xScale/=1.1;
+                    const x=e.clientX-ref.current.getBoundingClientRect().x;
+                    transform.x=(transform.x+x)/1.1-x;
+                    ref.current?.scrollTo(transform.x, transform.y);
+
+                    requestAnimationFrame(()=>render(new DiagramTransformC(transform.x,transform.y,transform.xScale,transform.yScale,SCALE)));
+                }
+                e.preventDefault();
+
+            }
+        }
+
 
         ref.current?.addEventListener('touchstart',onTouchStart);
         ref.current?.addEventListener('touchmove',onTouchMove);
+        ref.current?.addEventListener('wheel',onMouseWheel);
         return () => {
             ref.current?.removeEventListener('touchstart',onTouchStart);
             ref.current?.removeEventListener('touchmove',onTouchMove);
+            ref.current?.removeEventListener('wheel',onMouseWheel);
         };
     }, [diaRect]);
     useEffect(() => {

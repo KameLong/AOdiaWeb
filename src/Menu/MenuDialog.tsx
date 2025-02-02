@@ -118,13 +118,16 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                     <ListItemText  primary="端末に保存されたファイルを開く" />
                 </ListItem>
 
-                {lineFiles.map((lineFile, index) => (
+                {Object.keys(lineFiles).map(( index) => {
+                    const lineFile = lineFiles[index];
+                    return(
 
                     <SimpleTreeView
+                        id={index}
                         aria-label="file system navigator"
                         sx={{  flexGrow: 1, overflowY: 'auto' }}
                     >
-                        <TreeItem itemId="1" label={lineFile.name}>
+                        <TreeItem id={index} itemId="1" label={lineFile.name}>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -138,11 +141,11 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                                 {/*<Button><Delete></Delete></Button>*/}
                             </Box>
                             <TreeItem itemId="2" label="駅編集" onClick={()=>{
-                                webOuDia.snackbar.setMessage("現在開発中です");
+                                // webOuDia.snackbar.setMessage("現在開発中です");
 
 
-                                // handleClose();
-                                // navigate(`/stationEdit/${index}`);
+                                handleClose();
+                                navigate(`/stationEdit/${index}`);
                             }}/>
                             <TreeItem itemId="3" label="種別編集" onClick={()=>{
                                 webOuDia.snackbar.setMessage("現在開発中です");
@@ -154,7 +157,7 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                                 webOuDia.snackbar.setMessage("現在開発中です");
                             }}/>
                             {lineFile.diagram.map((diagram, diaIdx) => (
-                                <TreeItem itemId={index+"-"+diaIdx+"-dia"} label={diagram.name}>
+                                <TreeItem id={index+"-"+diaIdx+"-dia"} itemId={index+"-"+diaIdx+"-dia"} label={diagram.name}>
                                     <TreeItem itemId={index+"-"+diaIdx+"-downT"} label="下り時刻表"
                                               onClick={()=>{
                                                   handleClose();
@@ -177,7 +180,7 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                             ))}
                         </TreeItem>
                     </SimpleTreeView>
-                ))}
+                )})}
                 <ListItem onClick={()=>{
                     navigate('/help');
                     handleClose();

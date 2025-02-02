@@ -13,7 +13,7 @@ import {
     Typography
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {LineFile} from "./DiaData/DiaData.ts";
+import {LineFile, Station} from "./DiaData/DiaData.ts";
 import { StationEditPage } from './StationEdit/StationEditPage.tsx';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,6 +25,7 @@ import { CgNotes } from "react-icons/cg";
 import {Top} from "./Top.tsx";
 import {DiagramPage} from "./Diagram/DiagramPage.tsx";
 import { HelpPage } from './Heip/HelpPage.tsx';
+import {editLineFile, useLineFileReturn} from "./DiaData/DiaDataHook.ts";
 
 export interface useSnackbarProps{
     open:boolean;
@@ -45,8 +46,6 @@ function useSnackbar():useSnackbarProps{
 export interface WebOuDia{
     snackbar:useSnackbarProps;
 
-
-
     AppTitle: string;
     setAppTitle(value: string): void;
 
@@ -64,77 +63,24 @@ export interface WebOuDia{
 
     webOuDiaEvent:EventTarget;
 
-    diaData: LineFile[];
-    setDiaData: React.Dispatch<React.SetStateAction<LineFile[]>>;
+    diaData: {[key:number]:LineFile};
+    setDiaData: React.Dispatch<React.SetStateAction<{[key:number]:LineFile}>>;
+    getEditLineFile:(line:number)=>{
+        lineFile:LineFile;
+        setLineFile:(func:(prev:LineFile)=>LineFile)=>void;
+        editStations:(stations:Station[])=>void;
+        addStation:(station:Station,idx:number)=>void;
+        removeStation:(idx:number)=>void;
+        editStation:(station:Station,idx:number)=>void;
+    };
 
 }
 function useWebOuDia():WebOuDia{
     const [AppTitle, setAppTitle] = useState("WebDia");
     const snackbar=useSnackbar();
     const [menuOpen, setMenuOpen] = useState(false);
+    const lineFiles=editLineFile();
 
-    const [diaData, setDiaData] = useState<LineFile[]>([{
-        name:"サンプル路線名",
-        stations: [{
-            name: "駅A",
-            showArr: [false, false],
-            showDep: [true, true],
-            branchStation: -1,
-            isMajor: false,
-            checked: false
-        }, {
-            name: "駅B",
-            showArr: [false, false],
-            showDep: [true, true],
-            branchStation: -1,
-            isMajor: false,
-            checked: false
-        }],
-        trainType: [{
-            name: "普通",
-            shortName: "普通",
-            trainColor: "#000000",
-            lineColor   : "#000000",
-            fontIdx: 0,
-            lineWeight:1,
-            lineType:0,
-            shoudDrawStopMark:false,
-        }],
-        diagram:[{
-            trains:[[{
-                trainTypeId:0,
-                times:[{
-                    depTime:3600*12,
-                    ariTime:0,
-                    stopType:1,
-                },{
-                    depTime:3600*12+600,
-                    ariTime:0,
-                    stopType:1,
-                }],
-                name:"train1",
-                num:"1",
-                comment:""
-
-            }],[{
-                trainTypeId:0,
-                times:[{
-                    depTime:3600*12+1500,
-                    ariTime:0,
-                    stopType:1,
-                },{
-                    depTime:3600*12+900,
-                    ariTime:0,
-                    stopType:1,
-                }],
-                name:"train1",
-                num:"1",
-                comment:""
-
-            }]],
-            name:"平日",
-        }]
-    }]);
     const [showDeleteIcon, setShowDeleteIcon] = useState(false);
     const [showSaveIcon, setShowSaveIcon] = useState(true);
     const [showBottomIcon, setShowBottomIcon] = useState(false);
@@ -148,7 +94,8 @@ function useWebOuDia():WebOuDia{
         showSaveIcon, setShowSaveIcon,
         showBottomIcon,setShowBottomIcon,
         webOuDiaEvent: webOuDiaEvent,
-        diaData, setDiaData,
+        diaData: lineFiles.lineFiles, setDiaData: lineFiles.setLineFiles,
+        getEditLineFile: lineFiles.getEditLineFile,
         menuOpen, setMenuOpen
     };
 }

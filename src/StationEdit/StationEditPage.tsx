@@ -14,117 +14,81 @@ interface StationEditPageProps{
 export function StationEditPage({webOuDia}:StationEditPageProps){
     const diaIndex=0;
     const navigate = useNavigate();
-    const [stations,setStations]=React.useState<Station[]>(webOuDia.diaData[diaIndex].stations);
+    const editLineFile=webOuDia.getEditLineFile(diaIndex);
+
+    const stations=webOuDia.diaData[diaIndex].stations;
+
+    function setStations(func:(prev:Station[])=>Station[]){
+        editLineFile.editStations(func(stations));
+    }
+
     useEffect(()=>{
         if(stations.length===0){
             addStation(0);
         }
     },[stations.length]);
-    useEffect(()=> {
-        setStations(webOuDia.diaData[diaIndex].stations);
-        console.log(webOuDia.diaData[0]);
-    },[webOuDia.diaData[0]]);
 
-    useEffect(()=>{
-        const fn=()=>{
-            console.log("SaveButtonClicked");
-            webOuDia.setDiaData(prev=>{
-                console.log(prev[0].stations);
-                const newDiaData=[...prev];
-                newDiaData[diaIndex]={...newDiaData[diaIndex]};
-                newDiaData[diaIndex].stations=stations;
-                return newDiaData;
-            });
-        };
-        webOuDia.webOuDiaEvent.addEventListener("onSaveButtonClicked", fn);
-        return () => webOuDia.webOuDiaEvent.removeEventListener("onSaveButtonClicked", fn);
-    },[webOuDia.webOuDiaEvent]);
+    console.log(webOuDia.diaData[0]);
 
-    useEffect(()=>{
-        //チェックがついている駅を削除します。
-        const fn=()=>{
-            setStations(prev=>{
-                return prev.filter((station)=>!station.checked);
-            })
-        };
-        webOuDia.webOuDiaEvent.addEventListener("onDeleteButtonClicked", fn);
-        return () => webOuDia.webOuDiaEvent.removeEventListener("onDeleteButtonClicked", fn);
-    },[webOuDia.webOuDiaEvent]);
+    // useEffect(()=>{
+    //     const fn=()=>{
+    //         console.log("SaveButtonClicked");
+    //         webOuDia.setDiaData(prev=>{
+    //             const newDiaData={...prev};
+    //             newDiaData[diaIndex]={...newDiaData[diaIndex]};
+    //             newDiaData[diaIndex].stations=stations;
+    //             return newDiaData;
+    //         });
+    //     };
+    //     webOuDia.webOuDiaEvent.addEventListener("onSaveButtonClicked", fn);
+    //     return () => webOuDia.webOuDiaEvent.removeEventListener("onSaveButtonClicked", fn);
+    // },[webOuDia.webOuDiaEvent]);
+    //
+    // useEffect(()=>{
+    //     //チェックがついている駅を削除します。
+    //     const fn=()=>{
+    //         setStations(prev=>{
+    //             return prev.filter((station)=>!station.checked);
+    //         })
+    //     };
+    //     webOuDia.webOuDiaEvent.addEventListener("onDeleteButtonClicked", fn);
+    //     return () => webOuDia.webOuDiaEvent.removeEventListener("onDeleteButtonClicked", fn);
+    // },[webOuDia.webOuDiaEvent]);
 
-    useEffect(()=>{
-        webOuDia.setShowDeleteIcon(stations.filter((station)=>station.checked).length>0);
-    },[stations.filter((station)=>station.checked).length]);
 
 
 
     function setArr(index:number,direct:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].showArr[direct]=value;
-            return newStations;
-        });
+        const newStation={...stations[index]};
+        newStation.showArr[direct]=value;
+        editLineFile.editStation(newStation,index);
+
     }
     function setDep(index:number,direct:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].showDep[direct]=value;
-            return newStations;
-        });
+        const newStation={...stations[index]};
+        newStation.showDep[direct]=value;
+        editLineFile.editStation(newStation,index);
     }
     function setMajor(index:number,value:boolean){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations[index].isMajor=value;
-            return newStations;
-        });
+        const newStation={...stations[index]};
+        newStation.isMajor=value;
+        editLineFile.editStation(newStation,index);
+
     }
 
     function addStation(index:number){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations.splice(index,0,{
-                name:"",
-                showDep:[true,true],
-                showArr:[false,false],
-                isMajor:false,
-                branchStation:-1,
-                checked:false
-            });
-            return newStations;
-        });
-        webOuDia.setDiaData((prev:LineFile[])=>{
-            const newDiaData=[...prev];
-            newDiaData[diaIndex]={...newDiaData[diaIndex]};
-            newDiaData[diaIndex].stations.splice(index,0,{
-                name:"",
-                showDep:[true,true],
-                showArr:[false,false],
-                isMajor:false,
-                branchStation:-1,
-                checked:false
-            });
-            console.log(newDiaData[diaIndex].stations.length)
-            return newDiaData;
-        })
-
+        editLineFile.addStation({
+            name:"",
+            showDep:[true,true],
+            showArr:[false,false],
+            isMajor:false,
+            branchStation:-1,
+            checked:false
+        },index);
         //列車の駅情報にも追加
     }
     function deleteStation(index:number){
-        setStations(prev=>{
-            const newStations=[...prev];
-            newStations.splice(index,1);
-            if(newStations.length===0){
-                newStations.push({
-                    name:"",
-                    showDep:[true,true],
-                    showArr:[false,false],
-                    isMajor:false,
-                    branchStation:-1,
-                    checked:false
-                });
-            }
-            return newStations;
-        });
+        editLineFile.removeStation(index);
     }
 
 

@@ -79,7 +79,6 @@ export class DiagramCanvas{
     }
     DrawText(text:string,x:number,y:number) {
         if(this.ctx===undefined){
-            console.log(this.ctx);
             return;
         }
         this.ctx.font = `${this.fontSize*this.transform.SCALE}px sans-serif`;
@@ -87,7 +86,6 @@ export class DiagramCanvas{
     }
     DrawText_(text:string,x:number,y:number) {
         if(this.ctx===undefined){
-            console.log(this.ctx);
             return;
         }
         this.ctx.font = `${this.fontSize*this.transform.SCALE}px sans-serif`;
@@ -96,7 +94,6 @@ export class DiagramCanvas{
 
     DrawTimeHeader(verticalAxis:number){
         if(this.ctx===undefined){
-            console.log(this.ctx);
             return;
         }
         this.ctx.clearRect(0,0,86400*this.transform.SCALE*this.transform.xScale,1.8*this.fontSize*this.transform.SCALE);
@@ -257,7 +254,6 @@ export class DiagramCanvas{
     }
     DrawTrips(trips:DiagramLine[]){
         if(this.ctx===undefined){
-            console.log(this.ctx);
             return;
         }
         trips.forEach(item=>{
@@ -286,7 +282,6 @@ export class DiagramCanvas{
     }
     DrawStations(routeStations:DiagramStation[]){
         if(this.ctx===undefined){
-            console.log(this.ctx);
             return;
         }
         const stationViewWidth=80*this.transform.SCALE;
