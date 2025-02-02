@@ -19,118 +19,46 @@ interface TrainTypeEditPageProps{
 export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
     const diaIndex=0;
     const navigate = useNavigate();
-    const [trainTypes,setTrainTypes]=React.useState<TrainType[]>(webOuDia.diaData[diaIndex].trainType);
-    useEffect(()=> {
-        setTrainTypes(webOuDia.diaData[diaIndex].trainType);
-        console.log(webOuDia.diaData[0]);
-    },[webOuDia.diaData[0]]);
+    const trainTypes=webOuDia.diaData[diaIndex].trainType;
+    const editTrainType=webOuDia.getEditLineFile(diaIndex).getEditTrainType;
+
+    const snackbar=webOuDia.snackbar;
+    // const [trainTypes,setTrainTypes]=React.useState<TrainType[]>(webOuDia.diaData[diaIndex].trainType);
     useEffect(()=>{
         if(trainTypes.length===0){
-            addStation(0);
+            addType(0);
         }
     },[trainTypes.length]);
 
-    useEffect(()=>{
-        const fn=()=>{
-            console.log("SaveButtonClicked");
-            webOuDia.setDiaData(prev=>{
-                const newDiaData={...prev};
-                newDiaData[diaIndex]={...newDiaData[diaIndex]};
-                newDiaData[diaIndex].trainType=trainTypes;
-                return newDiaData;
-            });
-        };
-        webOuDia.webOuDiaEvent.addEventListener("onSaveButtonClicked", fn);
-        return () => webOuDia.webOuDiaEvent.removeEventListener("onSaveButtonClicked", fn);
-    },[webOuDia.webOuDiaEvent]);
-
-
-
-
-
-    // function setArr(index:number,direct:number,value:boolean){
-    //     setStations(prev=>{
-    //         const newStations=[...prev];
-    //         newStations[index].showArr[direct]=value;
-    //         return newStations;
-    //     });
-    // }
-    // function setDep(index:number,direct:number,value:boolean){
-    //     setStations(prev=>{
-    //         const newStations=[...prev];
-    //         newStations[index].showDep[direct]=value;
-    //         return newStations;
-    //     });
-    // }
-    function setMajor(index:number,value:boolean){
-        // setStations(prev=>{
-        //     const newStations=[...prev];
-        //     newStations[index].isMajor=value;
-        //     return newStations;
-        // });
-    }
-
-    function addStation(index:number){
-        // setStations(prev=>{
-        //     const newStations=[...prev];
-        //     newStations.splice(index,0,{
-        //         name:"",
-        //         showDep:[true,true],
-        //         showArr:[false,false],
-        //         isMajor:false,
-        //         branchStation:-1,
-        //         checked:false
-        //     });
-        //     return newStations;
-        // });
-        webOuDia.setDiaData((prev:LineFile[])=>{
-            const newDiaData=[...prev];
-            newDiaData[diaIndex]={...newDiaData[diaIndex]};
-            newDiaData[diaIndex].stations.splice(index,0,{
-                name:"",
-                showDep:[true,true],
-                showArr:[false,false],
-                isMajor:false,
-                branchStation:-1,
-                checked:false
-            });
-            console.log(newDiaData[diaIndex].stations.length)
-            return newDiaData;
-        })
-
-        //列車の駅情報にも追加
+    function addType(index:number){
+        editTrainType(index).addTrainType({
+            name: "",
+            shortName: "",
+            trainColor: "#000000",
+            lineColor: "#000000",
+            fontIdx: 0,
+            lineWeight: 1,
+            lineType: 0,
+            shoudDrawStopMark: false,
+        },index);
     }
     function deleteStation(index:number){
-        // setStations(prev=>{
-        //     const newStations=[...prev];
-        //     newStations.splice(index,1);
-        //     if(newStations.length===0){
-        //         newStations.push({
-        //             name:"",
-        //             showDep:[true,true],
-        //             showArr:[false,false],
-        //             isMajor:false,
-        //             branchStation:-1,
-        //             checked:false
-        //         });
-        //     }
-        //     return newStations;
-        // });
-    }
+        const res=editTrainType(index).removeTrainType(index);
+        if(!res){
+            snackbar.setMessage("この種別は現在使用されているため、削除できません。")
 
+        }
+
+    }
     function setTrainType(type:TrainType,index:number){
-        setTrainTypes(prev=>{
-            const newTrainTypes=[...prev];
-            newTrainTypes[index]=type;
-            return newTrainTypes;
+        editTrainType(index).setTrainType(prev=>{
+            return type;
         });
     }
-
 
     return (
         <div >
             <Box sx={{pb:10}}>
-
                 {trainTypes.map((trainType:TrainType,index)=>{
                     return(
                         <React.Fragment key={index}>
@@ -142,7 +70,7 @@ export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
                                 }}
                             >
                                 <Button onClick={()=>{
-                                    addStation(index);
+                                    addType(index);
 
                                 }}>
                                     <Add></Add>
@@ -168,7 +96,7 @@ export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
                                         onFocus={(event) => {
                                             console.log(event);
                                             if (index === trainTypes.length - 1) {
-                                                addStation(index + 1);
+                                                addType(index + 1);
                                             }
                                         }}
                                         fullWidth
@@ -207,9 +135,9 @@ export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
                                                    }}></ColorPickerKL>
                                     <span style={{marginLeft:'10px'}}>ダイヤ色</span>
                                     <ColorPickerKL style={{flexGrow:'1', height: '30px', margin: '5px 10px'}}
-                                                   color={trainType.trainColor}
+                                                   color={trainType.lineColor}
                                                    onChange={(color) => {
-                                                       setTrainType({...trainType, trainColor: color}, index);
+                                                       setTrainType({...trainType, lineColor: color}, index);
                                                    }}></ColorPickerKL>
                                 </Box>
                                 <Divider></Divider>
@@ -226,9 +154,9 @@ export function TrainTypeEditPage({webOuDia}:TrainTypeEditPageProps){
                                         }}
                                     >
                                         <MenuItem value={0}>実線</MenuItem>
-                                        <MenuItem value={20}>破線</MenuItem>
-                                        <MenuItem value={10}>点線</MenuItem>
-                                        <MenuItem value={30}>一点鎖線</MenuItem>
+                                        {/*<MenuItem value={20}>破線</MenuItem>*/}
+                                        {/*<MenuItem value={10}>点線</MenuItem>*/}
+                                        {/*<MenuItem value={30}>一点鎖線</MenuItem>*/}
                                     </Select>
                                 </FormControl>
 

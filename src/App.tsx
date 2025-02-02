@@ -25,7 +25,7 @@ import { CgNotes } from "react-icons/cg";
 import {Top} from "./Top.tsx";
 import {DiagramPage} from "./Diagram/DiagramPage.tsx";
 import { HelpPage } from './Heip/HelpPage.tsx';
-import {editLineFile, useLineFileReturn} from "./DiaData/DiaDataHook.ts";
+import {editLineFile, EditLineFileReturn, useLineFileReturn} from "./DiaData/DiaDataHook.ts";
 
 export interface useSnackbarProps{
     open:boolean;
@@ -65,15 +65,7 @@ export interface WebOuDia{
 
     diaData: {[key:number]:LineFile};
     setDiaData: React.Dispatch<React.SetStateAction<{[key:number]:LineFile}>>;
-    getEditLineFile:(line:number)=>{
-        lineFile:LineFile;
-        setLineFile:(func:(prev:LineFile)=>LineFile)=>void;
-        editStations:(stations:Station[])=>void;
-        addStation:(station:Station,idx:number)=>void;
-        removeStation:(idx:number)=>void;
-        editStation:(station:Station,idx:number)=>void;
-    };
-
+    getEditLineFile:(line:number)=>EditLineFileReturn;
 }
 function useWebOuDia():WebOuDia{
     const [AppTitle, setAppTitle] = useState("WebDia");
