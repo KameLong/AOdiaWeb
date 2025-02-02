@@ -2,7 +2,7 @@ name: BuildAndTest
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,6 +23,6 @@ jobs:
         server: 'sujiraw.kamelong.com'
         port: '22'
         local_path: './dist/*'
-        remote_path: '/ftp_kamelong/WebDia/'
+        remote_path: '/ftp_kamelong/WebDiaDev/'
         sftp_only: true
         password: ${{ secrets.FTP_PASSWORD }}
