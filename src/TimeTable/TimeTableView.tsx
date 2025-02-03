@@ -14,7 +14,7 @@ interface TimeTableViewProp{
     lineFile:LineFile;
     diaIdx:number;
     direction:number;
-    onStationSelected?:(stationId:number,stationIndex:number)=>void;
+    onStationSelected?:(name:string,stationIndex:number)=>void;
 }
 export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:TimeTableViewProp) {
     const [timetableSetting,setTimetableSetting] = useState<TimeTablePageSetting>({
@@ -113,7 +113,7 @@ export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:Time
                             direction={direction}
                             lineHeight={lineHeight}
                             onDblClick={(station, index: number) => {
-                                // onStationSelected?.(station.stationId, index);
+                                onStationSelected?.(station.name, index);
                             }}
                         />
                     </div>

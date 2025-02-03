@@ -28,7 +28,7 @@ self.addEventListener('install', function (evt) {
 })
 
 
-self.addEventListener('fetch', function (evt) {
+// self.addEventListener('fetch', function (evt) {
     // evt.respondWith(
     //     caches.match(evt.request).then(function (r) {
     //         console.log('[Service Worker] Fetching resource: ' + evt.request.url)
@@ -42,4 +42,4 @@ self.addEventListener('fetch', function (evt) {
     //         })
     //     })
     // )
-})
+// })

@@ -2,6 +2,7 @@ import {WebOuDia} from "../App.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import { TimeTableView } from "./TimeTableView.tsx";
 import {useEffect} from "react";
+import {hookStationSelectedDialog, StationSelectedDialog} from "./dialog/StationSelectedDialog.tsx";
 
 interface TimetablePageProps{
 
@@ -18,9 +19,13 @@ export function TimeTablePage({webOuDia}:TimetablePageProps){
     const direct = parseInt(param.direct ?? "0");
 
     const lineFile=webOuDia.diaData[lineID];
+    const editLineFile=webOuDia.getEditLineFile(lineID);
     const diagram=lineFile.diagram[diaIdx];
     const stations=lineFile.stations;
     const trainTypes=lineFile.trainType;
+    const snackbar=webOuDia.snackbar;
+
+    const stationSelectedDialog=hookStationSelectedDialog();
     useEffect(()=>{
         if(direct===0){
             webOuDia.setAppTitle("下り時刻表 "+diagram.name);
@@ -54,7 +59,19 @@ export function TimeTablePage({webOuDia}:TimetablePageProps){
 
     return (
         <div style={{height:'100%'}}>
-            <TimeTableView lineFile={lineFile} diaIdx={diaIdx} direction={direct}></TimeTableView>
+            <TimeTableView lineFile={lineFile} diaIdx={diaIdx} direction={direct}
+                            onStationSelected={(name,stationIdx)=> {
+                                console.log(name,stationIdx);
+                                stationSelectedDialog.setOpen(true);
+                                stationSelectedDialog.setStationName(name);
+                                stationSelectedDialog.setStationIdx(stationIdx);
+                            }}
+            ></TimeTableView>
+            <StationSelectedDialog hook={stationSelectedDialog}
+             onSort={(stationIdx:number)=>{
+                 // editLineFile.getEditDiagram(diaIdx).sortTrainsByStation(direct,stationIdx);
+                 snackbar.setMessage("現在実装中です");
+             }}/>
         </div>
     )
 

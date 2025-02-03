@@ -119,15 +119,16 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                 </ListItem>
 
                 {Object.keys(lineFiles).map(( index) => {
+                    console.log(index);
                     const lineFile = lineFiles[index];
                     return(
 
                     <SimpleTreeView
-                        id={index}
+                        key={index}
                         aria-label="file system navigator"
                         sx={{  flexGrow: 1, overflowY: 'auto' }}
                     >
-                        <TreeItem id={index} itemId="1" label={lineFile.name}>
+                        <TreeItem key={index} itemId="1" label={lineFile.name}>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -148,15 +149,15 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                                 navigate(`/stationEdit/${index}`);
                             }}/>
                             <TreeItem itemId="3" label="種別編集" onClick={()=>{
-                                handleClose();
-                                navigate(`/traintypeEdit/${index}`);
+                                // handleClose();
+                                // navigate(`/traintypeEdit/${index}`);
 
                             }}/>
                             <TreeItem itemId="4" label="駅時刻表" onClick={()=>{
                                 webOuDia.snackbar.setMessage("現在開発中です");
                             }}/>
                             {lineFile.diagram.map((diagram, diaIdx) => (
-                                <TreeItem id={index+"-"+diaIdx+"-dia"} itemId={index+"-"+diaIdx+"-dia"} label={diagram.name}>
+                                <TreeItem key={index+"-"+diaIdx+"-dia"} itemId={index+"-"+diaIdx+"-dia"} label={diagram.name}>
                                     <TreeItem itemId={index+"-"+diaIdx+"-downT"} label="下り時刻表"
                                               onClick={()=>{
                                                   handleClose();

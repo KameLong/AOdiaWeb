@@ -83,6 +83,8 @@ export function editLineFile():useLineFileReturn{
     }});
     function getEditLineFile(lineID:number):EditLineFileReturn{
         const lineFile=lineFiles[lineID];
+
+
         function setLineFile(func:(prev:LineFile)=>LineFile){
             setLineFiles((prev)=>{
                 return {...prev,[lineID]:func(prev[lineID])}
@@ -225,14 +227,12 @@ export function editDiagram(lineFile:LineFile,setLineFile: (func:(prev:LineFile)
             return {...prev,diagram:newDiagram};
         });
     }
-
     function addDiagram(diagram:Diagram,idx:number){
         setLineFile((prev)=> {
             const newDiagram=[...prev.diagram];
             newDiagram.splice(idx,0,diagram);
             return {...prev, diagram: newDiagram};
         });
-
     }
     function removeDiagram(idx:number){
         setLineFile((prev)=> {
@@ -244,11 +244,25 @@ export function editDiagram(lineFile:LineFile,setLineFile: (func:(prev:LineFile)
     function getEditTrain(direction:number,trainIdx:number){
         return editTrain(lineFile.diagram[diaIdx],setDiagram,direction,trainIdx);
     }
+
+    /**
+     * 指定駅で並び替えを行います
+     */
+    function sortTrainsByStation(direction:number,stationIdx:number){
+        setDiagram((prev)=>{
+            const newTrains=[[...prev.trains[0]],[...prev.trains[1]]];
+            newTrains[direction].sort((a,b)=>{
+                return a.times[stationIdx].depTime-b.times[stationIdx].depTime;
+            });
+            return {...prev,trains:newTrains};
+        });
+    }
     return{
         setDiagram,
         addDiagram,
         removeDiagram,
-        getEditTrain
+        getEditTrain,
+        sortTrainsByStation
     }
 
 
