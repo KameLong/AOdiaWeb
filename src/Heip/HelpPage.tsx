@@ -10,11 +10,30 @@ export function HelpPage({webOuDia}:{webOuDia:WebOuDia}){
     const version=import.meta.env.VITE_APP_VERSION;
     return (
         <>
+            <Paper sx={{mx: 2,mt:2, p:3 }}>
+                <h3>不具合が発生した場合は</h3>
+                <Typography>
+                    以下のリンクから不具合内容を書いたissueを作成してください
+                </Typography>
+                <a href="https://github.com/KameLong/AOdiaWeb/issues">https://github.com/KameLong/AOdiaWeb/issues</a>
+
+
+            </Paper>
+
             <Paper sx={{mx: 2, px: 2}}>
                 <h3>version & 履歴</h3>
                 現在のversion:{version}
                 <List>
                     <ListItem>
+                        <div>
+                            <Typography variant={'h6'} component="div">
+                                2025/02/03 v0.1.2
+                            </Typography>
+                            <Typography component="div" sx={{ml: 2}}>
+                                種別編集機能を実装
+                            </Typography>
+                        </div>
+                    </ListItem>                    <ListItem>
                         <div>
                             <Typography variant={'h6'} component="div">
                                 2025/02/02 v0.1.1

@@ -148,9 +148,8 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                                 navigate(`/stationEdit/${index}`);
                             }}/>
                             <TreeItem itemId="3" label="種別編集" onClick={()=>{
-                                webOuDia.snackbar.setMessage("現在開発中です");
-                                // handleClose();
-                                // navigate(`/traintypeEdit/${index}`);
+                                handleClose();
+                                navigate(`/traintypeEdit/${index}`);
 
                             }}/>
                             <TreeItem itemId="4" label="駅時刻表" onClick={()=>{

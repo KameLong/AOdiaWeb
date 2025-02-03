@@ -1,18 +1,22 @@
 import {useState} from "react";
-import {Diagram, LineFile, Station, Train} from "./DiaData.ts";
+import {Diagram, LineFile, Station, Train, TrainType} from "./DiaData.ts";
 
 
 export interface useLineFileReturn{
     lineFiles:{[key:number]:LineFile};
     setLineFiles:(lineFiles:{[key:number]:LineFile})=>void;
-    getEditLineFile:(lineID:number)=>{
-        lineFile:LineFile;
-        setLineFile:(func:(prev:LineFile)=>LineFile)=>void;
-        editStations:(stations:Station[])=>void;
-        addStation:(station:Station,idx:number)=>void;
-        removeStation:(idx:number)=>void;
-        editStation:(station:Station,idx:number)=>void;
-    }
+    getEditLineFile:(lineID:number)=>EditLineFileReturn;
+}
+export interface EditLineFileReturn{
+    lineFile:LineFile;
+    setLineFile:(func:(prev:LineFile)=>LineFile)=>void;
+    editStations:(stations:Station[])=>void;
+    addStation:(station:Station,idx:number)=>void;
+    removeStation:(idx:number)=>void;
+    editStation:(station:Station,idx:number)=>void;
+    getEditTrainType:(typeIdx:number)=>ReturnType<typeof editTrainType>;
+    getEditDiagram:(diaIdx:number)=>ReturnType<typeof editDiagram>;
+
 }
 export function editLineFile():useLineFileReturn{
     const [lineFiles, setLineFiles] = useState<{[key:number]:LineFile}>({0: {
@@ -77,7 +81,7 @@ export function editLineFile():useLineFileReturn{
             name:"平日",
         }]
     }});
-    function getEditLineFile(lineID:number){
+    function getEditLineFile(lineID:number):EditLineFileReturn{
         const lineFile=lineFiles[lineID];
         function setLineFile(func:(prev:LineFile)=>LineFile){
             setLineFiles((prev)=>{
@@ -98,15 +102,19 @@ export function editLineFile():useLineFileReturn{
                 const ed=editDiagram(lineFile,setLineFile,i);
                 for(let j=0;j<lineFile.diagram[i].trains[0].length;j++){
                     const train=ed.getEditTrain(0,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
-                    train.editTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
+                        return {...prev,times:newTimes};
+                    });
                 }
                 for(let j=0;j<lineFile.diagram[i].trains[1].length;j++){
                     const train=ed.getEditTrain(1,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
-                    train.editTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,0,{depTime:-1,ariTime:-1,stopType:1});
+                        return {...prev,times:newTimes};
+                    });
                 }
             }
 
@@ -120,15 +128,19 @@ export function editLineFile():useLineFileReturn{
                 const ed=editDiagram(lineFile,setLineFile,i);
                 for(let j=0;j<lineFile.diagram[i].trains[0].length;j++){
                     const train=ed.getEditTrain(0,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,1);
-                    train.editTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,1);
+                        return {...prev,times:newTimes};
+                    });
                 }
                 for(let j=0;j<lineFile.diagram[i].trains[1].length;j++){
                     const train=ed.getEditTrain(1,j);
-                    const newTimes=[...train.train.times];
-                    newTimes.splice(idx,1);
-                    train.editTrain({...train.train,times:newTimes});
+                    train.setTrain(prev=>{
+                        const newTimes=[...prev.times];
+                        newTimes.splice(idx,1);
+                        return {...prev,times:newTimes};
+                    });
                 }
             }
         }
@@ -140,6 +152,9 @@ export function editLineFile():useLineFileReturn{
         function getEditDiagram(diaIdx:number){
             return editDiagram(lineFile,setLineFile,diaIdx);
         }
+        function getEditTrainType(typeIdx:number){
+            return editTrainType(getEditLineFile(lineID),lineFile,setLineFile,typeIdx);
+        }
 
 
 
@@ -150,6 +165,7 @@ export function editLineFile():useLineFileReturn{
             addStation,
             removeStation,
             editStation,
+            getEditTrainType,
             getEditDiagram
         }
     }
@@ -170,6 +186,13 @@ export function editTrain(diagram:Diagram,setDiagram:(func:(prev:Diagram)=>Diagr
             return {...prev,trains:newTrains};
         });
     }
+    function setTrain(func:(prev:Train)=>Train){
+        setDiagram((prev)=>{
+            const newTrains=[[...prev.trains[0]],[...prev.trains[1]]];
+            newTrains[direction].splice(trainIdx,1,func(prev.trains[direction][trainIdx]));
+            return {...prev,trains:newTrains};
+        });
+    }
     function addTrain(train:Train,idx:number){
         setDiagram((prev)=> {
             const newTrains=[[...prev.trains[0]],[...prev.trains[1]]];
@@ -187,11 +210,12 @@ export function editTrain(diagram:Diagram,setDiagram:(func:(prev:Diagram)=>Diagr
     }
     return{
         train,
-        editTrain,
+        setTrain,
         addTrain,
         removeTrain,
     }
 }
+
 export function editDiagram(lineFile:LineFile,setLineFile: (func:(prev:LineFile)=>LineFile)=>void,diaIdx:number){
 //    const diagram=lineFile.diagram[diaIdx];
     function setDiagram(func:(prev:Diagram)=>Diagram){
@@ -201,13 +225,7 @@ export function editDiagram(lineFile:LineFile,setLineFile: (func:(prev:LineFile)
             return {...prev,diagram:newDiagram};
         });
     }
-    function editDiagram(diagram:Diagram){
-        setLineFile((prev)=>{
-            const newDiagram=[...prev.diagram];
-            newDiagram.splice(diaIdx,1,diagram);
-            return {...prev,diagram:newDiagram};
-        });
-    }
+
     function addDiagram(diagram:Diagram,idx:number){
         setLineFile((prev)=> {
             const newDiagram=[...prev.diagram];
@@ -227,11 +245,106 @@ export function editDiagram(lineFile:LineFile,setLineFile: (func:(prev:LineFile)
         return editTrain(lineFile.diagram[diaIdx],setDiagram,direction,trainIdx);
     }
     return{
-        editDiagram,
+        setDiagram,
         addDiagram,
         removeDiagram,
         getEditTrain
     }
 
+
+}
+
+export function editTrainType(editLine:EditLineFileReturn,lineFile:LineFile,setLineFile: (func:(prev:LineFile)=>LineFile)=>void,typeIdx:number){
+    function setTrainType(func:(prev:TrainType)=>TrainType){
+        setLineFile((prev)=>{
+            const newTypes=[...prev.trainType];
+            newTypes.splice(typeIdx,1,func(prev.trainType[typeIdx]));
+            return {...prev,trainType:newTypes};
+        });
+    }
+    function addTrainType(type:TrainType,idx:number){
+        //種別idxのインクリメント
+
+        for(let i=0;i<lineFile.diagram.length;i++) {
+            for (let j = 0; j < lineFile.diagram[i].trains[0].length; j++) {
+                if (lineFile.diagram[i].trains[0][j].trainTypeId >= idx) {
+                    const ed=editLine.getEditDiagram(i).getEditTrain(0,j);
+                    ed.setTrain(prev=>{
+                        const newTrain={...prev};
+                        newTrain.trainTypeId=prev.trainTypeId+1;
+                        return newTrain;
+                    });
+                }
+                if (lineFile.diagram[i].trains[1][j].trainTypeId >= idx) {
+                    const ed=editLine.getEditDiagram(i).getEditTrain(1,j);
+                    ed.setTrain(prev=>{
+                        const newTrain={...prev};
+                        newTrain.trainTypeId=prev.trainTypeId+1;
+                        return newTrain;
+                    });
+                }
+            }
+        }
+
+        setLineFile((prev)=> {
+            const newTypes=[...prev.trainType];
+            newTypes.splice(idx,0,type);
+            return {...prev, trainType: newTypes};
+        });
+
+    }
+
+    /**
+     * 種別削除
+     * @param idx
+     * @returns 削除成功したか
+     */
+    function removeTrainType(idx:number):boolean{
+        //現在使用されているかの判定
+        for(let i=0;i<lineFile.diagram.length;i++) {
+            for (let j = 0; j < lineFile.diagram[i].trains[0].length; j++) {
+                if (lineFile.diagram[i].trains[0][j].trainTypeId === idx) {
+                    return false;
+                }
+                if (lineFile.diagram[i].trains[1][j].trainTypeId === idx) {
+                    return false;
+                }
+            }
+        }
+
+        //種別idxのデクリメント
+        for(let i=0;i<lineFile.diagram.length;i++) {
+            for (let j = 0; j < lineFile.diagram[i].trains[0].length; j++) {
+                if (lineFile.diagram[i].trains[0][j].trainTypeId > idx) {
+                    const ed=editLine.getEditDiagram(i).getEditTrain(0,j);
+                    ed.setTrain(prev=>{
+                        const newTrain={...prev};
+                        newTrain.trainTypeId=prev.trainTypeId-1;
+                        return newTrain;
+                    });
+                }
+                if (lineFile.diagram[i].trains[1][j].trainTypeId > idx) {
+                    const ed=editLine.getEditDiagram(i).getEditTrain(1,j);
+                    ed.setTrain(prev=>{
+                        const newTrain={...prev};
+                        newTrain.trainTypeId=prev.trainTypeId-1;
+                        return newTrain;
+                    });
+                }
+            }
+        }
+
+        setLineFile((prev)=> {
+            const newTypes=[...prev.trainType];
+            newTypes.splice(idx,1);
+            return {...prev, trainType: newTypes};
+        });
+        return true;
+    }
+    return{
+        setTrainType,
+        addTrainType,
+        removeTrainType
+    }
 
 }
