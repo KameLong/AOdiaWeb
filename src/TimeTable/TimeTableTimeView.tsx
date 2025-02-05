@@ -3,13 +3,15 @@ import {Station, StationTime} from "../DiaData/DiaData.ts";
 import {TimeTablePageSetting} from "./TimeTableView.tsx";
 interface TimeTableTimeViewProps {
     direction: number;
-    stationTime:StationTime
-    station:Station
+    stationTime:StationTime;
+    station:Station;
     // 直前の駅
-    befTime?:StationTime
+    befTime?:StationTime;
     // 直後の駅
-    aftTime?:StationTime
-    setting:TimeTablePageSetting
+    aftTime?:StationTime;
+    setting:TimeTablePageSetting;
+    selected:number;
+    onSelected?:(type:number)=>void;
 
 
 }
@@ -29,7 +31,7 @@ function getBetterTime(time1:number,time2:number):number{
 }
 
 
-export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,direction}:TimeTableTimeViewProps){
+export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,direction,selected,onSelected}:TimeTableTimeViewProps){
     // const divWidth=setting.fontSize*2.2;
     const isBothShow=station.showDep[direction]&&station.showArr[direction];
     const lineHeight=setting.lineHeight*setting.fontSize;
@@ -91,9 +93,14 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
 
     return <div>
         {station.showArr[direction]?
-            <div className={styles.time} style={{
-                lineHeight: `${lineHeight}px`,
-                height: `${lineHeight}px`}}>
+            <div className={styles.time}
+                 style={{
+                    lineHeight: `${lineHeight}px`,
+                    height: `${lineHeight}px`,
+                    backgroundColor:"#FFF",
+                    mixBlendMode:selected===0 ? 'difference':'normal'}}
+                    onClick={()=>{onSelected?.(0)}}
+            >
                 {ariStr}
             </div>:null
         }
@@ -103,7 +110,15 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
         }
 
         {station.showDep[direction]?
-            <div className={styles.time} style={{lineHeight: `${lineHeight}px`,height: `${lineHeight}px`}}>
+            <div className={styles.time}
+                 style={{
+                     lineHeight: `${lineHeight}px`,
+                     height: `${lineHeight}px`,
+                     backgroundColor:"#FFF",
+                     mixBlendMode:selected===2 ? 'difference':'normal'
+            }}
+                 onClick={()=>{onSelected?.(2)}}
+            >
             {depStr}
             </div>:null
         }

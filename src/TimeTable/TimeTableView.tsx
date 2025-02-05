@@ -4,6 +4,7 @@ import {HolizontalBoxList} from "./HolizontalBoxList.tsx";
 import {TimeTableStationView} from "./TimeTableStationView.tsx";
 import {TimeTableTrainNameView} from "./timeTableTrainNameView.tsx";
 import {LineFile} from "../DiaData/DiaData.ts";
+import {TimeTableViewHook} from "./TimeTableViewHook.ts";
 
 export interface TimeTablePageSetting{
     fontSize:number,
@@ -18,7 +19,7 @@ interface TimeTableViewProp{
 }
 export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:TimeTableViewProp) {
     const [timetableSetting,setTimetableSetting] = useState<TimeTablePageSetting>({
-        fontSize:13,
+        fontSize:14,
         lineHeight:1.1
     });
 
@@ -32,21 +33,29 @@ export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:Time
 
     const trains=lineFile.diagram[diaIdx].trains[direction];
 
+    const hook=TimeTableViewHook();
+
+
     if(trains.length==0){
         return(<div></div>)
     }
-    console.log(lineFile.stations);
 
     const TrainView = ( index:number, style:any) => {
         const train=trains[index];
         const selected=false;
         return (
             <div key={index} className={selected?"selected":""} style={style}>
-                <TimeTableTrainView train={train}
-                                    direction={direction}
-                                    station={lineFile.stations}
-                                    type={lineFile.trainType[train.trainTypeId]}
-                                    setting={timetableSetting}>
+                <TimeTableTrainView
+                    train={train}
+                    selected={hook.timeSelected.byTrainIdx(index)}
+                    direction={direction}
+                    station={lineFile.stations}
+                    type={lineFile.trainType[train.trainTypeId]}
+                    setting={timetableSetting}
+                    onClicked={(stationIdx,type)=>{
+                        hook.timeSelected.setSelectedTime(index,stationIdx,type);
+                    }
+                }>
                 </TimeTableTrainView>
             </div>
         );

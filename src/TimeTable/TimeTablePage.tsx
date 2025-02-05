@@ -1,8 +1,9 @@
 import {WebOuDia} from "../App.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import { TimeTableView } from "./TimeTableView.tsx";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {hookStationSelectedDialog, StationSelectedDialog} from "./dialog/StationSelectedDialog.tsx";
+import {TimeEditDialog} from "./dialog/TimeEditDialog.tsx";
 
 interface TimetablePageProps{
 
@@ -58,7 +59,7 @@ export function TimeTablePage({webOuDia}:TimetablePageProps){
     console.log(diagram);
 
     return (
-        <div style={{height:'100%'}}>
+        <div style={{height:'100%',display:"flex", flexDirection: "column"}}>
             <TimeTableView lineFile={lineFile} diaIdx={diaIdx} direction={direct}
                             onStationSelected={(name,stationIdx)=> {
                                 console.log(name,stationIdx);
@@ -72,6 +73,9 @@ export function TimeTablePage({webOuDia}:TimetablePageProps){
                  // editLineFile.getEditDiagram(diaIdx).sortTrainsByStation(direct,stationIdx);
                  snackbar.setMessage("現在実装中です");
              }}/>
+            <TimeEditDialog>
+
+            </TimeEditDialog>
         </div>
     )
 

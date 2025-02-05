@@ -97,7 +97,7 @@ function App() {
     const webOuDia=useWebOuDia();
 
     return (
-        <div style={{height:'100vh'}}>
+        <div style={{height:'100vh',display:'flex',flexDirection:'column'}}>
             <AppBar position="static" sx={{backgroundColor:'#040'}}>
                 <Toolbar>
                     <Typography variant="h6" style={{flexGrow: 1}}>
@@ -127,7 +127,7 @@ function App() {
                     {/*<Button color="inherit">Login</Button>*/}
                 </Toolbar>
             </AppBar>
-            <div style={{height:'calc(100% - 118px)'}}>
+            <div style={{flexShrink:'1',flexGrow:'1'}}>
                 <BrowserRouter>
                     <Routes >
                         <Route path="/" element={
@@ -195,9 +195,7 @@ function App() {
                     ></MenuDialog>
                 </BrowserRouter>
             </div>
-
-
-            <Box sx={{width: '100%', borderTop:'1px solid gray',position: 'fixed',bottom: 0, zIndex: 1300}}>
+            <Box sx={{width: '100%', borderTop:'1px solid gray'}}>
 
                 <BottomNavigation
                     onChange={(event, newValue) => {
