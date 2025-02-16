@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {createContext, useState} from 'react';
 import './App.css';
 import {BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom';
 import {MenuDialog} from "./Menu/MenuDialog.tsx";
@@ -26,6 +26,7 @@ import {Top} from "./Top.tsx";
 import {DiagramPage} from "./Diagram/DiagramPage.tsx";
 import { HelpPage } from './Heip/HelpPage.tsx';
 import {editLineFile, EditLineFileReturn, useLineFileReturn} from "./DiaData/DiaDataHook.ts";
+import {TimeTableViewHook} from "./TimeTable/TimeTableViewHook.ts";
 
 export interface useSnackbarProps{
     open:boolean;
@@ -77,7 +78,7 @@ function useWebOuDia():WebOuDia{
     const [showSaveIcon, setShowSaveIcon] = useState(true);
     const [showBottomIcon, setShowBottomIcon] = useState(false);
 
-    const [webOuDiaEvent] = useState(new EventTarget())
+    const [webOuDiaEvent] = useState(()=>new EventTarget())
 
 
     return {AppTitle, setAppTitle,
@@ -91,12 +92,17 @@ function useWebOuDia():WebOuDia{
         menuOpen, setMenuOpen
     };
 }
+export const WebOudContext = createContext<ReturnType<typeof useWebOuDia>>(null);
+
+
 
 
 function App() {
     const webOuDia=useWebOuDia();
 
     return (
+        <WebOudContext.Provider value={webOuDia}>
+
         <div style={{height:'100vh',display:'flex',flexDirection:'column'}}>
             <AppBar position="static" sx={{backgroundColor:'#040'}}>
                 <Toolbar>
@@ -140,7 +146,7 @@ function App() {
                             <TrainTypeEditPage webOuDia={webOuDia}/>
                         }/>
                         <Route path="/TimeTable/:lineID/:diaIdx/:direct" element={
-                            <TimeTablePage webOuDia={webOuDia}/>
+                            <TimeTablePage />
                         }/>
                         <Route path="/Diagram/:lineID/:diaIdx" element={
                             <DiagramPage webOuDia={webOuDia}/>
@@ -247,7 +253,7 @@ function App() {
             />
 
         </div>
-
+        </WebOudContext.Provider>
     );
 }
 

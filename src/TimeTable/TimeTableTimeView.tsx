@@ -1,6 +1,8 @@
 import styles from "./timetable.module.scss";
 import {Station, StationTime} from "../DiaData/DiaData.ts";
 import {TimeTablePageSetting} from "./TimeTableView.tsx";
+import {TimeTablePageContext} from "./TimeTablePage.tsx";
+import {useContext, useEffect} from "react";
 interface TimeTableTimeViewProps {
     direction: number;
     stationTime:StationTime;
@@ -38,6 +40,19 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
 
     let ariStr:string="";
     let depStr:string="";
+    const editTime=useContext(TimeTablePageContext).editTime;
+
+    function parseInputText(){
+        if(editTime.inputText.length===4){
+            if(editTime.inputText[0]==="0"){
+                return editTime.inputText.slice(1);
+            }
+        }
+        return editTime.inputText;
+    }
+
+
+
 
     switch (stationTime.stopType){
         case 0:
@@ -92,35 +107,73 @@ export function TimeTableTimeView({stationTime,befTime,aftTime,station,setting,d
     }
 
     return <div>
-        {station.showArr[direction]?
-            <div className={styles.time}
-                 style={{
-                    lineHeight: `${lineHeight}px`,
-                    height: `${lineHeight}px`,
-                    backgroundColor:"#FFF",
-                    mixBlendMode:selected===0 ? 'difference':'normal'}}
-                    onClick={()=>{onSelected?.(0)}}
-            >
-                {ariStr}
-            </div>:null
+        {station.showArr[direction] ?
+            (
+                selected === 0 ?
+                <div className={styles.time}
+                     style={{
+                         lineHeight: `${lineHeight}px`,
+                         height: `${lineHeight}px`,
+                         backgroundColor: "#FFF",
+                         mixBlendMode:  'difference'
+                     }}
+                     onClick={() => {
+                         onSelected?.(0)
+                     }}
+                >
+                    {parseInputText()}
+                </div>
+                :
+                <div className={styles.time}
+                     style={{
+                         lineHeight: `${lineHeight}px`,
+                         height: `${lineHeight}px`,
+                         backgroundColor: "#FFF",
+                     }}
+                     onClick={() => {
+                         console.log(0);
+                         onSelected?.(0)
+                     }}
+                >
+                    {ariStr}
+                </div>
+        )
+            :null
         }
-        {station.showArr[direction]&&station.showDep[direction] ?
-            <div style={{borderBottom:'1px solid black',height:'1px'}}>
-            </div>:null
+        {station.showArr[direction] && station.showDep[direction] ?
+            <div style={{borderBottom: '1px solid black', height: '1px'}}>
+            </div> : null
         }
 
-        {station.showDep[direction]?
-            <div className={styles.time}
-                 style={{
-                     lineHeight: `${lineHeight}px`,
-                     height: `${lineHeight}px`,
-                     backgroundColor:"#FFF",
-                     mixBlendMode:selected===2 ? 'difference':'normal'
-            }}
-                 onClick={()=>{onSelected?.(2)}}
-            >
-            {depStr}
-            </div>:null
+        {station.showDep[direction] ?            (
+            selected === 2 ?
+                <div className={styles.time}
+                     style={{
+                         lineHeight: `${lineHeight}px`,
+                         height: `${lineHeight}px`,
+                         backgroundColor: "#FFF",
+                         mixBlendMode:  'difference'
+                     }}
+                     onClick={() => {
+                         onSelected?.(2)
+                     }}
+                >
+                    {parseInputText()}
+                </div>
+                :
+                <div className={styles.time}
+                     style={{
+                         lineHeight: `${lineHeight}px`,
+                         height: `${lineHeight}px`,
+                         backgroundColor: "#FFF",
+                     }}
+                     onClick={() => {
+                         onSelected?.(2)
+                     }}
+                >
+                    {depStr}
+                </div>
+        ):null
         }
     </div>
 }

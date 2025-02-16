@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {TimeTableTrainView} from "./TimeTableTrainView.tsx";
 import {HolizontalBoxList} from "./HolizontalBoxList.tsx";
 import {TimeTableStationView} from "./TimeTableStationView.tsx";
 import {TimeTableTrainNameView} from "./timeTableTrainNameView.tsx";
 import {LineFile} from "../DiaData/DiaData.ts";
 import {TimeTableViewHook} from "./TimeTableViewHook.ts";
+import {TimeTablePageContext} from "./TimeTablePage.tsx";
 
 export interface TimeTablePageSetting{
     fontSize:number,
@@ -33,12 +34,23 @@ export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:Time
 
     const trains=lineFile.diagram[diaIdx].trains[direction];
 
-    const hook=TimeTableViewHook();
+    const hook=useContext(TimeTablePageContext);
+
+    useEffect(() => {
+        const stationTime=trains[hook.timeSelected.selectedTrainIdx]?.times[hook.timeSelected.selectedStationIdx];
+        if(stationTime===undefined){
+            hook.editTime.setTime({depTime: -1, ariTime: -1, stopType: 0});
+            return;
+        }
+        hook.editTime.setTime(stationTime);
+    }, [hook.timeSelected.selectedTrainIdx,hook.timeSelected.selectedStationIdx]);
+
 
 
     if(trains.length==0){
         return(<div></div>)
     }
+
 
     const TrainView = ( index:number, style:any) => {
         const train=trains[index];
@@ -53,7 +65,11 @@ export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:Time
                     type={lineFile.trainType[train.trainTypeId]}
                     setting={timetableSetting}
                     onClicked={(stationIdx,type)=>{
-                        hook.timeSelected.setSelectedTime(index,stationIdx,type);
+                        if(hook.timeSelected.selectedTrainIdx===index&&hook.timeSelected.selectedStationIdx===stationIdx&&hook.timeSelected.selectedType===type) {
+                            hook.timeSelected.setSelectedTime(-1, -1, -1);
+                        }else {
+                            hook.timeSelected.setSelectedTime(index, stationIdx, type);
+                        }
                     }
                 }>
                 </TimeTableTrainView>

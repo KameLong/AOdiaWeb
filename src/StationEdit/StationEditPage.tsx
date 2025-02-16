@@ -163,7 +163,7 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
                                         color="primary"
                                     />
                                 }
-                                label={"上り"}
+                                label="下り"
                             />
                             <FormControlLabel
                                 control={
@@ -176,7 +176,7 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
                                         color="primary"
                                     />
                                 }
-                                label="下り"
+                                label={"上り"}
                             />
                             <Divider></Divider>
                             <span style={{marginRight: 10}}>発時刻表示</span>
@@ -191,7 +191,7 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
                                         color="primary"
                                     />
                                 }
-                                label="上り"
+                                label={("下り")}
                             />
                             <FormControlLabel
                                 control={
@@ -204,7 +204,7 @@ export function StationEditPage({webOuDia}:StationEditPageProps){
                                         color="primary"
                                     />
                                 }
-                                label={("下り")}
+                                label="上り"
                             />
                             <Divider></Divider>
                             <FormControlLabel

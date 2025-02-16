@@ -1,12 +1,16 @@
-import {Button, Dialog} from "@mui/material";
+import {Button, Dialog, TextField} from "@mui/material";
 import  Grid  from "@mui/material/Grid2";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import {EditTime} from "../TimeTableViewHook.ts";
+import {TimeTablePageContext} from "../TimeTablePage.tsx";
+
+
 
 export function TimeEditDialog(){
-    const [open,setOpen]=useState<boolean>(true);
+    const editTimeHook=useContext(TimeTablePageContext).editTime;
     const buttonStyle={height:'50px',margin:"2px",border:'solid 1px black'};
     return(
-        <div style={{display:'block'}}>
+        <div style={{display:editTimeHook.open?'block':'none'}}>
             <Grid container spacing={0}>
                 <Grid size={{xs:6}}>
                     <Grid container spacing={0}>
@@ -76,62 +80,111 @@ export function TimeEditDialog(){
                 <Grid size={{xs:6}}>
                     <Grid container spacing={0}>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button
+                                style={buttonStyle}
+                                onClick={()=>{
+                                    editTimeHook.appendText("1");
+                                }}
+                            >
                                 1
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("2");
+                                    }}
+                            >
                                 2
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("3");
+                                    }}
+                            >
                                 3
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("4");
+                                    }}
+                            >
                                 4
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("5");
+                                    }}
+                            >
+
                                 5
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("6");
+                                    }}
+                            >
                                 6
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("7");
+                                    }}
+                            >
                                 7
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("8");
+                                    }}
+                            >
                                 8
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("9");
+                                    }}
+                            >
                                 9
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("back");
+                                    }}
+                            >
                                 ←
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("0");
+                                    }}
+                            >
                                 0
                             </Button>
                         </Grid>
                         <Grid size={{xs:4}}>
-                            <Button style={buttonStyle}>
+                            <Button style={buttonStyle}
+                                    onClick={()=>{
+                                        editTimeHook.appendText("enter");
+                                    }}>
                                 ↩︎
 
                             </Button>

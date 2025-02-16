@@ -132,6 +132,7 @@ export interface Station{
     checked:boolean;
 }
 function StationFromO_O(o_o: O_O): Array<Station>{
+    console.log(o_o.stations);
     return o_o.stations.map((station)=>{
         let showDep=[false,false];
         let showArr=[false,false];

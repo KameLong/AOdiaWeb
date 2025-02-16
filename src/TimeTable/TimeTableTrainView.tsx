@@ -31,7 +31,7 @@ export function TimeTableTrainView({train,station,setting,type,direction,selecte
                         return(
                             <TimeTableTimeView
                                 key={sIndex}
-                                direction={1}
+                                direction={direction}
                                 befTime={orderedStationTime[sIndex-1]}
                                 stationTime={orderedStationTime[sIndex]}
                                 aftTime={orderedStationTime[sIndex+1]}
