@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Diagram, LineFile, Station, Train, TrainType} from "./DiaData.ts";
+import {Diagram, LineFile, Station, StationTime, Train, TrainType} from "./DiaData.ts";
 
 
 export interface useLineFileReturn{
@@ -210,11 +210,30 @@ export function editTrain(diagram:Diagram,setDiagram:(func:(prev:Diagram)=>Diagr
             return {...prev,trains:newTrains};
         });
     }
+    function getEditStationTime(stationIdx:number){
+        return editStationTime(train,setTrain,stationIdx);
+    }
     return{
         train,
         setTrain,
         addTrain,
         removeTrain,
+        getEditStationTime
+    }
+}
+
+export function editStationTime(train:Train,setTrain:(func:(prev:Train)=>Train)=>void,stationIdx:number){
+    function setStationTime(st:StationTime){
+        setTrain(prev=>{
+            const next={...prev};
+            next.times=[...next.times];
+            next.times[stationIdx]=st;
+            return next;
+        });
+    }
+    return{
+        setStationTime
+
     }
 }
 

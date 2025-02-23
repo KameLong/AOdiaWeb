@@ -41,17 +41,39 @@ export function EditTime(){
 
 
     useEffect(() => {
-        console.log(inputText);
         if(inputText.length===4){
-            setTimeout(()=>{
-                appendText("enter");
-            },0);
+            switch(type){
+                case 0:
+                    //着時刻に設定
+                    setTime(prev=> {
+                        const next={...prev};
+                        next.ariTime = getInputTime();
+                        next.stopType=10;
+                        setTimeout(()=>{
+                            webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:next}));
+                        },0);
+                        return next;
+                    });
+                    break;
+                case 2:
+                    //発時刻に設定
+                    setTime(prev=> {
+                        const next={...prev};
+                        next.depTime = getInputTime();
+                        setTimeout(()=>{
+                            webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:next}));
+                        },0);
+                        next.stopType=10;
+                        return next;
+                    });
+                    break;
+            }
+
         }
 
+
+
     }, [inputText]);
-    // useEffect(() => {
-    //     console.log(event);
-    // }, [event]);
 
     const getInputTime=useCallback(():number=>{
         let text=inputText;
@@ -62,8 +84,6 @@ export function EditTime(){
         const hh=parseInt(text.slice(0,2));
         const mm=parseInt(text.slice(2,4));
         return hh*3600+mm*60;
-
-
     },[inputText]);
 
 
@@ -102,7 +122,7 @@ export function EditTime(){
 
     };
 
-    function appendText(text:string){
+    const appendText=useCallback((text:string)=>{
         switch(text){
             case "0":
                 appendDigit(text);
@@ -140,10 +160,26 @@ export function EditTime(){
                     break;
             case "enter":
                 console.log("enter");
-                webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent("onEnterClicked", {}))
+                webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:time}))
                 break;
+            case "pass":
+                webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:{
+                    depTime:-1,ariTime:-1,stopType:20
+                    }}))
+                break;
+            case "novia":
+                webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:{
+                        depTime:-1,ariTime:-1,stopType:30
+                    }}))
+                break;
+            case "none":
+                webOuDia.webOuDiaEvent.dispatchEvent(new CustomEvent<StationTime>("onEnterClicked", {detail:{
+                        depTime:-1,ariTime:-1,stopType:0
+                    }}))
+                break;
+
         }
-    }
+    },[webOuDia.webOuDiaEvent,inputText,appendDigit]);
 
     useEffect(() => {
         switch(type){
@@ -179,7 +215,6 @@ export function EditTime(){
         type,
         setType,
         appendText,
-        getInputTime
 
     }
 
@@ -241,6 +276,8 @@ export function TimeTableTimeSelected(){
                             return;
                         }
                     }
+                    setSelectedStationIdx(-1);
+                    setSelectedType(-1);
                     break;
             }
         }

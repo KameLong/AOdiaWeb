@@ -5,6 +5,7 @@ import React, {createContext, useCallback, useContext, useEffect} from "react";
 import {hookStationSelectedDialog, StationSelectedDialog} from "./dialog/StationSelectedDialog.tsx";
 import {TimeEditDialog} from "./dialog/TimeEditDialog.tsx";
 import {TimeTableViewHook} from "./TimeTableViewHook.ts";
+import {StationTime} from "../DiaData/DiaData.ts";
 
 
 export const TimeTablePageContext = createContext<ReturnType<typeof TimeTableViewHook>>(null);
@@ -13,7 +14,6 @@ export function TimeTablePage(){
     const param = useParams<{ lineID: string, diaIdx: string, direct: string }>();
     const navigate=useNavigate();
     const webOuDia=useContext(WebOudContext);
-
     const lineID= parseInt(param.lineID ?? "0");
     const diaIdx = parseInt(param.diaIdx ?? "0");
     const direct = parseInt(param.direct ?? "0");
@@ -24,37 +24,26 @@ export function TimeTablePage(){
     const trainTypes=lineFile.trainType;
     const snackbar=webOuDia.snackbar;
     const timetableViewHook = TimeTableViewHook();
-    const onEnterClicked = useCallback(() => {
-        console.log("onEnterClicked");
+    const onEnterClicked = useCallback((event:CustomEvent<StationTime>) => {
         // 最新のstateを使って処理を行う
+        const trainIdx=timetableViewHook.timeSelected.selectedTrainIdx;
         const train = timetableViewHook.timeSelected.selectedTrainIdx !== undefined
-            ? diagram.trains[direct][timetableViewHook.timeSelected.selectedTrainIdx]
+            ? diagram.trains[direct][trainIdx]
             : null;
         if (!train) return;
         const stationIdx = timetableViewHook.timeSelected.selectedStationIdx;
-        const stationTime = train.times[stationIdx];
-
-        const time = timetableViewHook.editTime.getInputTime();
-        console.log("time", time);
-
-        switch (timetableViewHook.timeSelected.selectedType) {
-            case 0:
-                stationTime.ariTime = time;
-                break;
-            case 2:
-                stationTime.depTime = time;
-                break;
-        }
+        const editStation=webOuDia.getEditLineFile(lineID).getEditDiagram(diaIdx).getEditTrain(direct,trainIdx).getEditStationTime(stationIdx)
+        editStation.setStationTime(event.detail);
+        console.log(event.detail);
         timetableViewHook.timeSelected.moveToNextRow(lineFile.stations, direct);
     }, [
         timetableViewHook.timeSelected.selectedTrainIdx,
         timetableViewHook.timeSelected.selectedStationIdx,
-        timetableViewHook.timeSelected.selectedType,
-        timetableViewHook.editTime.getInputTime,
         diagram,
         direct,
         lineFile.stations,
     ]);
+
 
     useEffect(() => {
         console.log("trainIdx",timetableViewHook.timeSelected.selectedTrainIdx)
@@ -95,7 +84,6 @@ export function TimeTablePage(){
         }
     },[]);
     useEffect(() => {
-        console.log("test");
         webOuDia.webOuDiaEvent.addEventListener("onEnterClicked",onEnterClicked);
         return ()=>{
             webOuDia.webOuDiaEvent.removeEventListener("onEnterClicked",onEnterClicked);
