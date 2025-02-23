@@ -45,9 +45,6 @@ export function TimeTablePage(){
     ]);
 
 
-    useEffect(() => {
-        console.log("trainIdx",timetableViewHook.timeSelected.selectedTrainIdx)
-    }, [timetableViewHook.timeSelected.selectedTrainIdx]);
 
 
     const stationSelectedDialog=hookStationSelectedDialog();

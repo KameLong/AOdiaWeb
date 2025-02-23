@@ -33,6 +33,10 @@ export function EditTime(){
         ariTime:-1,
         stopType:0
     });
+
+    //直前の参考になる時間。
+    const [refTime,setRefTime]=useState<number>(-1);
+
     const webOuDia=useContext(WebOudContext);
 
 
@@ -186,7 +190,12 @@ export function EditTime(){
             case 0:{
                 //着時刻
                 if(time.ariTime<0){
-                    setInputText("");
+                    if(refTime<0){
+                        setInputText("");
+                        break;
+                    }
+                    const hh=Math.floor(refTime/3600);
+                    setInputText(hh.toString().padStart(2,'0'));
                     break;
                 }
                 const hh=Math.floor(time.ariTime/3600);
@@ -195,7 +204,12 @@ export function EditTime(){
             }
             case 2:{
                 if(time.depTime<0){
-                    setInputText("");
+                    if(refTime<0){
+                        setInputText("");
+                        break;
+                    }
+                    const hh=Math.floor(refTime/3600);
+                    setInputText(hh.toString().padStart(2,'0'));
                     break;
                 }
                 const hh=Math.floor(time.depTime/3600);
@@ -215,6 +229,7 @@ export function EditTime(){
         type,
         setType,
         appendText,
+        setRefTime
 
     }
 

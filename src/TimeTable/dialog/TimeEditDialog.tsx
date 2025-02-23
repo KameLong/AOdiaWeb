@@ -34,6 +34,16 @@ export function TimeEditDialog(){
                         editTimeHook.appendText("pass");
                     }
                     break;
+                case "=":
+                    if(event.ctrlKey){
+                        editTimeHook.appendText("novia");
+                    }
+                    break;
+                case "Delete":
+                    if(event.ctrlKey){
+                        editTimeHook.appendText("none");
+                    }
+                    break;
 
                 case "Backspace":
                     editTimeHook.appendText("back");

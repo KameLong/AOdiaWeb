@@ -43,6 +43,20 @@ export function TimeTableView({lineFile,diaIdx,direction,onStationSelected}:Time
             return;
         }
         hook.editTime.setTime(stationTime);
+        let refTime=-1;
+
+        for(let i=hook.timeSelected.selectedStationIdx-1;i>=0;i--){
+            if(trains[hook.timeSelected.selectedTrainIdx]?.times[i].depTime>0){
+                refTime=trains[hook.timeSelected.selectedTrainIdx]?.times[i].depTime;
+                break;
+            }
+            if(trains[hook.timeSelected.selectedTrainIdx]?.times[i].ariTime>0){
+                refTime=trains[hook.timeSelected.selectedTrainIdx]?.times[i].ariTime;
+                break;
+            }
+        }
+        hook.editTime.setRefTime(refTime);
+
     }, [hook.timeSelected.selectedTrainIdx,hook.timeSelected.selectedStationIdx]);
 
 
