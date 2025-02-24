@@ -2,7 +2,7 @@ import {WebOudContext, WebOuDia} from "../App.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import { TimeTableView } from "./TimeTableView.tsx";
 import React, {createContext, useCallback, useContext, useEffect} from "react";
-import {hookStationSelectedDialog, StationSelectedDialog} from "./dialog/StationSelectedDialog.tsx";
+import {useStationSelectedDialog, StationSelectedDialog} from "./dialog/StationSelectedDialog.tsx";
 import {TimeEditDialog} from "./dialog/TimeEditDialog.tsx";
 import {TimeTableViewHook} from "./TimeTableViewHook.ts";
 import {StationTime} from "../DiaData/DiaData.ts";
@@ -47,7 +47,7 @@ export function TimeTablePage(){
 
 
 
-    const stationSelectedDialog=hookStationSelectedDialog();
+    const stationSelectedDialog=useStationSelectedDialog();
     useEffect(()=>{
         console.log("useEffect");
         if(direct===0){

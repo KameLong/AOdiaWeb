@@ -1,45 +1,48 @@
-import {Box, Dialog, List, ListItem, Paper} from "@mui/material";
-import React, {useState} from "react";
+import React, { useState } from "react";
+import {Box, Dialog, List, ListItem, ListItemButton, Paper} from "@mui/material";
 
-export function hookStationSelectedDialog(){
-    const [open,setOpen]=useState<boolean>(false);
-    const [stationName,setStationName]=useState<string>("");
-    const [stationIdx,setStationIdx]=useState<number>(0);
-    return{
-        open,
-        setOpen,
-        stationName,
-        setStationName,
-        stationIdx,
-        setStationIdx
-    }
+
+
+// フック名を "useStationSelectedDialog" に変更
+export function useStationSelectedDialog() {
+    const [open, setOpen] = useState<boolean>(false);
+    const [stationName, setStationName] = useState<string>("");
+    const [stationIdx, setStationIdx] = useState<number>(0);
+
+    return { open, setOpen, stationName, setStationName, stationIdx, setStationIdx };
 }
 
+interface StationSelectedDialogProps {
+    hook: ReturnType<typeof useStationSelectedDialog >;
+    onSort: (stationIdx: number) => void;
+}
 
+export function StationSelectedDialog({
+                                          hook,
+                                          onSort,
+                                      }: StationSelectedDialogProps) {
+    const handleSort = () => {
+        onSort(hook.stationIdx);
+    };
 
-export function StationSelectedDialog({hook,onSort}:{onSort:(stationIdx)=>void,hook:ReturnType<typeof hookStationSelectedDialog>}){
-    return(
-        <Dialog open={hook.open} onClose={()=>hook.setOpen(false)}
-        >
+    return (
+        <Dialog open={hook.open} onClose={() => hook.setOpen(false)}>
             <Paper>
                 <h3>{hook.stationName}</h3>
                 <Box>
                     <List>
-                        <ListItem onClick={()=>{
-                            onSort(hook.stationIdx);
-                        }}>
+                        <ListItemButton  onClick={handleSort}>
                             この駅を基準に並び替える。
-                        </ListItem>
-                        <ListItem>
+                        </ListItemButton>
+                        <ListItemButton >
                             下り駅時刻表
-                        </ListItem>
-                        <ListItem>
+                        </ListItemButton>
+                        <ListItemButton >
                             上り駅時刻表
-                        </ListItem>
+                        </ListItemButton>
                     </List>
                 </Box>
-
             </Paper>
         </Dialog>
-    )
+    );
 }
