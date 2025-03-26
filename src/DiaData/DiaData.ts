@@ -32,6 +32,15 @@ function TrainFromO_O(oTrain:Streak,stationCount:number,direction:number): Train
     if(direction===1){
         times=times.toReversed();
     }
+    const timeConvert=(time:number)=>{
+        if(time<0){
+            return -1;
+        }
+        if(time<3*3600){
+            return time+24*3600;
+        }
+        return time;
+    }
     const train={
         name: oTrain.name,
         num: oTrain.no,
@@ -46,8 +55,8 @@ function TrainFromO_O(oTrain:Streak,stationCount:number,direction:number): Train
                 };
             }
             return {
-                depTime: time.departure.getTime(),
-                ariTime: time.arrival.getTime(),
+                depTime: timeConvert(time.departure.getTime()),
+                ariTime: timeConvert(time.arrival.getTime()),
                 stopType: time.type,
             };
         }),

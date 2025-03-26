@@ -118,11 +118,9 @@ export function EditTime(){
         if (inputText.length >= 4) return;
         const newTime = inputText + digit;
 
-        // 3桁、4桁のどちらかの可能性が残っていればOK
         if (validFor4(newTime)) {
             setInputText(newTime);
         }
-        // どちらの可能性もなくなった場合は入力を無視
 
     };
 
@@ -181,6 +179,7 @@ export function EditTime(){
                         depTime:-1,ariTime:-1,stopType:0
                     }}))
                 break;
+
 
         }
     },[webOuDia.webOuDiaEvent,inputText,appendDigit]);
@@ -298,6 +297,43 @@ export function TimeTableTimeSelected(){
         }
 
     }
+    function moveToPrevRow(stations:Station[],direction:number){
+        console.log(selectedStationIdx, selectedType);
+        const sIdx=selectedStationIdx;
+        if(direction===0) {
+            switch (selectedType) {
+                case 2:
+                    if(stations[sIdx].showArr[direction]){
+                        setSelectedType(()=>0);
+                        return;
+                    }
+                    console.log(1);
+                case 0:
+                    //前の駅の到着or発車のうち存在する方を選択
+                    for(let i=sIdx-1;i>=0;i--){
+                        if(stations[i].showDep[direction]){
+                            console.log(i);
+                            setSelectedStationIdx(()=>i);
+                            setSelectedType(()=>2);
+                            return;
+                        }
+                        if(stations[i].showArr[direction]){
+                            console.log(i);
+                            setSelectedStationIdx(()=>i);
+                            setSelectedType(()=>0);
+                            return;
+                        }
+                    }
+                    setSelectedStationIdx(-1);
+                    setSelectedType(-1);
+                    break;
+            }
+        }
+
+    }
+    function moveTrainDiff(trainDiff:number){
+        setSelectedTrainIdx((prev)=>prev+trainDiff);
+    }
 
     return{
         selectedTrainIdx,
@@ -305,7 +341,9 @@ export function TimeTableTimeSelected(){
         selectedType,
         setSelectedTime,
         byTrainIdx,
-        moveToNextRow
+        moveToNextRow,
+        moveToPrevRow,
+        moveTrainDiff
     }
 
 

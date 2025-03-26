@@ -44,6 +44,25 @@ export function TimeTablePage(){
         lineFile.stations,
     ]);
 
+    const onRightClicked = useCallback(() => {
+        // 最新のstateを使って処理を行う
+        const trainIdx=timetableViewHook.timeSelected.selectedTrainIdx;
+        console.log(trainIdx);
+        timetableViewHook.timeSelected.setSelectedTime(trainIdx+1,timetableViewHook.timeSelected.selectedStationIdx,timetableViewHook.timeSelected.selectedType);
+    }, [
+        timetableViewHook.timeSelected.selectedTrainIdx,
+        timetableViewHook.timeSelected.selectedStationIdx,
+    ]);
+    const onLeftClicked = useCallback(() => {
+        // 最新のstateを使って処理を行う
+        const trainIdx=timetableViewHook.timeSelected.selectedTrainIdx;
+        console.log(trainIdx);
+        timetableViewHook.timeSelected.setSelectedTime(trainIdx-1,timetableViewHook.timeSelected.selectedStationIdx,timetableViewHook.timeSelected.selectedType);
+    }, [
+        timetableViewHook.timeSelected.selectedTrainIdx,
+        timetableViewHook.timeSelected.selectedStationIdx,
+    ]);
+
 
 
 
@@ -88,6 +107,42 @@ export function TimeTablePage(){
     }, [onEnterClicked]);
 
 
+
+    const handleKeyDown=useCallback((event:KeyboardEvent) => {
+        console.log(event.key);
+            switch(event.key){
+                case "ArrowRight":
+                    timetableViewHook.timeSelected.moveTrainDiff(1);
+                    event.preventDefault();
+                    break;
+                case "ArrowLeft":
+                    timetableViewHook.timeSelected.moveTrainDiff(-1);
+                    event.preventDefault();
+                    break;
+
+                case "ArrowDown":
+                    timetableViewHook.timeSelected.moveToNextRow(lineFile.stations, direct);
+                    event.preventDefault();
+                    break;
+                case "ArrowUp":
+                    timetableViewHook.timeSelected.moveToPrevRow(lineFile.stations, direct);
+                    event.preventDefault();
+                    break;
+            }
+    },[timetableViewHook.timeSelected])
+
+
+    useEffect(() => {
+            // コンポーネントがマウントされたときにイベントリスナーを登録
+            document.addEventListener("keydown", handleKeyDown);
+            return () => {
+                document.removeEventListener("keydown", handleKeyDown);
+            };
+        // クリーンアップ: コンポーネントがアンマウントされる際にイベントリスナーを解除
+    }, [handleKeyDown]); // 空の依存配列で初回マウント時のみ登録
+
+
+
     return (
         <TimeTablePageContext.Provider value={timetableViewHook}>
         <div style={{height:'100%',display:"flex", flexDirection: "column"}}>
@@ -101,7 +156,7 @@ export function TimeTablePage(){
             ></TimeTableView>
             <StationSelectedDialog hook={stationSelectedDialog}
              onSort={(stationIdx:number)=>{
-                 // editLineFile.getEditDiagram(diaIdx).sortTrainsByStation(direct,stationIdx);
+                 editLineFile.getEditDiagram(diaIdx).sortTrainsByStation(direct,stationIdx);
                  snackbar.setMessage("現在実装中です");
              }}/>
             <TimeEditDialog>

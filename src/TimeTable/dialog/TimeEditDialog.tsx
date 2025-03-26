@@ -28,25 +28,35 @@ export function TimeEditDialog(){
                 case "8":
                 case "9":
                     editTimeHook.appendText(event.key);
+                    event.preventDefault();
                     break;
                 case "-":
                     if(event.ctrlKey){
                         editTimeHook.appendText("pass");
+                        event.preventDefault();
                     }
                     break;
                 case "=":
                     if(event.ctrlKey){
                         editTimeHook.appendText("novia");
+                        event.preventDefault();
                     }
                     break;
                 case "Delete":
                     if(event.ctrlKey){
                         editTimeHook.appendText("none");
+                        event.preventDefault();
                     }
                     break;
 
                 case "Backspace":
                     editTimeHook.appendText("back");
+                    event.preventDefault();
+                    break;
+                case "Enter":
+                    editTimeHook.appendText("enter");
+                    event.preventDefault();
+                    break;
 
             }
         };
