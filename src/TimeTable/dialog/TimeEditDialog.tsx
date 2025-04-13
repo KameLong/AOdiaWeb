@@ -5,6 +5,7 @@ import {EditTime} from "../TimeTableViewHook.ts";
 import {TimeTablePageContext} from "../TimeTablePage.tsx";
 import {StationTime} from "../../DiaData/DiaData.ts";
 import {WebOudContext} from "../../App.tsx";
+import {TextInput} from "../Component/TextInput.tsx";
 
 
 
@@ -74,11 +75,24 @@ export function TimeEditDialog(){
     return(
         <div style={{display:editTimeHook.open?'block':'none'}}>
             <Grid container spacing={0}>
-                <Grid size={{xs:6}}>
+
+                <Grid size={{xs:6}} sx={{my:1}}>
+                    <TextField
+                    size={"small"}
+                    label={"発時刻"}>
+
+                    </TextField>
+                </Grid>
+                <Grid size={{xs: 6}} sx={{my: 1}}>
+                    <TextInput></TextInput>
+
+                </Grid>
+
+                <Grid size={{xs: 6}}>
                     <Grid container spacing={0}>
-                        <Grid size={{xs:4}}>
+                        <Grid size={{xs: 4}}>
                             <Button style={buttonStyle}
-                                onClick={()=>{
+                                    onClick={()=>{
                                     editTimeHook.appendText("pass");
                                 }}>
                                 通過

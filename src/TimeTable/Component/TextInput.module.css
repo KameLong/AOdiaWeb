@@ -1,0 +1,12 @@
+.noBorder {
+    background-color: white;
+    padding: 10px;
+    text-anchor: end;
+}
+.noBorder:focus {
+    outline: none;
+    animation: borderIn 0.4s forwards;
+    background-color: #f0ffff;
+}
+
+

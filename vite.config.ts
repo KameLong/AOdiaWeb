@@ -6,7 +6,6 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
-
 // const baseFolder =
 //     env.APPDATA !== undefined && env.APPDATA !== ''
 //         ? `${env.APPDATA}/ASP.NET/https`
@@ -35,7 +34,9 @@ import { env } from 'process';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [plugin()],
+    plugins: [
+        plugin(),
+    ],
     build: {
         outDir: 'dist', // necessary
         emptyOutDir: true, // also necessary
