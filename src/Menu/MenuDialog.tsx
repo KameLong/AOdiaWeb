@@ -4,11 +4,12 @@ import {WebOuDia} from "../App.tsx";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {ExpandMore, ChevronRight, Save, Delete} from '@mui/icons-material';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import {getFiles, saveData} from "../DiaData/IndexedDB.ts";
+import {getFiles, saveData, saveToOPFS} from "../DiaData/IndexedDB.ts";
 import {FileSelectDialog} from "./FileSelectDialog.tsx";
 import {O_O} from "@route-builders/oud-operator";
 import {LineFileFromO_O} from "../DiaData/DiaData.ts";
 import {useNavigate} from "react-router-dom";
+import {OPFSFileReader} from "./FileSelectFromBrawser.tsx";
 
 interface MenuDialogProps {
     open: boolean;
@@ -25,6 +26,8 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
         setOpen(false);
     };
     const [fileSelectOpen,setFileSelectOpen] = useState(false);
+    const [openFromBrowser,setOpenFromBrowser] = useState(false);
+
 
     const menuItems = new Array(100).fill(0).map((_, i) => 'test' + i);
     const navigate=useNavigate();
@@ -80,9 +83,7 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                     <ListItemText primary="新規作成" />
                 </ListItem>
                 <ListItem onClick={()=>{
-                    webOuDia.snackbar.setMessage("現在開発中です");
-
-                    // setFileSelectOpen(true);
+                    setOpenFromBrowser(true)
                 }}>
                     <ListItemText  primary="ブラウザに保存されたダイヤを開く" />
                 </ListItem>
@@ -131,20 +132,18 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                         <TreeItem key={index} itemId="1" label={lineFile.name}>
                             <Box
                                 sx={{
+                                    ml:2,
                                     display: 'flex',
-                                    justifyContent: 'flex-end',
+                                    justifyContent: 'flex-start',
                                 }}>
-                                {/*<Button*/}
-                                {/*    onClick={()=>{*/}
-                                {/*        //保存ボタン*/}
-                                {/*        saveData("test1",{test:"test"});*/}
-                                {/*    }}><Save></Save></Button>*/}
+                                <Button
+                                    onClick={()=>{
+                                        //保存ボタン
+                                        saveToOPFS(lineFile.name+".wdia",JSON.stringify(lineFile));
+                                    }}><Save></Save></Button>
                                 {/*<Button><Delete></Delete></Button>*/}
                             </Box>
                             <TreeItem itemId="2" label="駅編集" onClick={()=>{
-                                // webOuDia.snackbar.setMessage("現在開発中です");
-
-
                                 handleClose();
                                 navigate(`/stationEdit/${index}`);
                             }}/>
@@ -189,6 +188,38 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                 </ListItem>
             </List>
             <FileSelectDialog open={fileSelectOpen} setOpen={setFileSelectOpen} onFileSelected={()=>{}}></FileSelectDialog>
+            <Dialog open={openFromBrowser} onClose={()=>setOpenFromBrowser(false)}
+                    fullScreen
+                    PaperProps={{
+                        style: {
+                            position: 'absolute',
+                            bottom: 0,
+                            margin: 0,
+                            width: 'calc(100% - 20px)',
+                            maxWidth:'400px',
+                            maxHeight: '80vh',
+                            borderTopLeftRadius: '16px',
+                            borderTopRightRadius: '16px',
+                            borderBottomLeftRadius: '0px',
+                            borderBottomRightRadius: '0px',
+                        },
+                    }}
+
+
+            >
+                <OPFSFileReader onFileSelected={
+                    (file: File) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const text = e.target.result as string;
+                            webOuDia.setDiaData([JSON.parse(text)]);
+                            setOpenFromBrowser(false);
+                            handleClose();
+                        };
+                        reader.readAsText(file);
+                    }
+                }/>
+            </Dialog>
 
         </Dialog>
     );

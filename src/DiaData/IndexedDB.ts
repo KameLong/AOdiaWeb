@@ -71,38 +71,45 @@ export function getFile(fileName:string){
     });
 
 }
+
+/**
+ * OPFS にテキストファイルを保存する
+ * @param {string} fileName    保存するファイル名（例: "data.txt"）
+ * @param {string} contentText ファイルに書き込むテキスト
+ */
+export async function saveToOPFS(fileName, contentText) {
+    // OPFS が使えるか確認
+    if (!navigator.storage || !navigator.storage.getDirectory) {
+        throw new Error("このブラウザは OPFS (Origin-Private File System) に対応していません。");
+    }
+
+    try {
+        // OPFS のルートディレクトリハンドルを取得
+        const rootDir = await navigator.storage.getDirectory();
+
+        // ファイルハンドルを取得（なければ作成）
+        const fileHandle = await rootDir.getFileHandle(fileName, { create: true });
+
+        // 書き込み用ストリームを開く
+        const writable = await fileHandle.createWritable();
+
+        // テキストを書き込む
+        await writable.write(contentText);
+
+        // ストリームをクローズして確定
+        await writable.close();
+
+        console.log(`OPFS に ${fileName} を保存しました。`);
+    } catch (err) {
+        console.error("OPFS への保存中にエラーが発生しました:", err);
+        throw err;
+    }
+}
+
 export function saveData(fileName:string,data:any):Promise<void>{
     return new Promise<void>((resolve,reject)=>{
 
-        const openReq  = indexedDB.open(dbName,DB_VERSION);
-    //　DB名を指定して接続。DBがなければ新規作成される。
-        openReq.onupgradeneeded = onupgradeneeded;
-        openReq.onsuccess = function(event){
-            //@ts-ignore
-            const db:IDBDatabase = event.target.result;
-            const trans = db.transaction(storeName, 'readwrite');
-            const store = trans.objectStore(storeName);
-            const putReq = store.put({fileName:fileName, data:data});
-            putReq.onsuccess = function(){
-                console.log('put data success');
-            }
-            putReq.onerror = function(){
-                console.log('put data error');
-                reject();
-            }
-            trans.oncomplete = function(){
-                // トランザクション完了時(putReq.onsuccessの後)に実行
-                console.log('transaction complete');
-                resolve();
 
-            }
-            db.close();
-        }
-        openReq.onerror = function(event){
-            // 接続に失敗
-            console.log('db open error');
-            reject();
-        }
     });
 
 
