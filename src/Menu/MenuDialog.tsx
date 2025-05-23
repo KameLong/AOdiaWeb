@@ -4,7 +4,7 @@ import {WebOuDia} from "../App.tsx";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {ExpandMore, ChevronRight, Save, Delete} from '@mui/icons-material';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
-import {getFiles, saveData, saveToOPFS} from "../DiaData/IndexedDB.ts";
+import { saveToOPFS} from "../DiaData/IndexedDB.ts";
 import {FileSelectDialog} from "./FileSelectDialog.tsx";
 import {O_O} from "@route-builders/oud-operator";
 import {LineFileFromO_O} from "../DiaData/DiaData.ts";
@@ -91,9 +91,6 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                     //@ts-ignore
                     document.getElementById("fileInput").value='';
                     document.getElementById("fileInput").click();
-
-
-
                 }}>
                     <input type={"file"}  style={{display:'none'}} id={"fileInput"} onChange={(event)=>{
                         if (event.target.files[0]) {
@@ -106,6 +103,7 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                                     const o_o = new O_O();
                                     o_o.fromOud(text);
                                     webOuDia.setDiaData([LineFileFromO_O(o_o)]);
+                                    console.log(webOuDia);
                                 }catch (ex){
                                     webOuDia.snackbar.setMessage("ファイルの読み込みに失敗しました。現在、oudファイルのみ対応しています。oud2ファイルは未対応です。");
 
@@ -187,7 +185,6 @@ export function MenuDialog({open,setOpen,webOuDia}: MenuDialogProps) {
                     <ListItemText  primary="ヘルプ" />
                 </ListItem>
             </List>
-            <FileSelectDialog open={fileSelectOpen} setOpen={setFileSelectOpen} onFileSelected={()=>{}}></FileSelectDialog>
             <Dialog open={openFromBrowser} onClose={()=>setOpenFromBrowser(false)}
                     fullScreen
                     PaperProps={{

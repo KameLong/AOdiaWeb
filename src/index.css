@@ -7,7 +7,8 @@
   font-family: 'DiaPro';   /* フォント名 */
   src: url('../public/font/DiaPro-Regular.ttf') format('truetype');   /* フォントファイル */
 }
-
+html{
+}
 body {
   margin: 0;
   font-family: 'Noto Sans JP';

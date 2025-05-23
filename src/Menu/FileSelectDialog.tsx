@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Dialog, List, ListItem, ListItemText} from "@mui/material";
-import {getFile, getFiles} from "../DiaData/IndexedDB.ts";
 
 interface FileSelectDialogProps {
     open:boolean;
@@ -11,9 +10,9 @@ interface FileSelectDialogProps {
 export function FileSelectDialog({onFileSelected,open,setOpen}:FileSelectDialogProps){
     const [files,setFiles] = useState<string[]>([]);
     useEffect(()=>{
-        getFiles().then((files)=>{
-            setFiles(files);
-        });
+        // getFiles().then((files)=>{
+        //     setFiles(files);
+        // });
     },[]);
     return(
         <Dialog open={open} onClose={()=>setOpen(false)}
@@ -33,21 +32,21 @@ export function FileSelectDialog({onFileSelected,open,setOpen}:FileSelectDialogP
                     },
                 }}
         >
-            <List>
-                {
-                    files.map((file,index)=>(
-                        <ListItem key={index} onClick={()=>{
-                            getFile(file).then((data)=>{
-                                onFileSelected(data);
-                                setOpen(false);
-                            });
-                        }}>
-                            <ListItemText primary={file} />
-                        </ListItem>
-                    ))
-                }
+            {/*<List>*/}
+            {/*    {*/}
+            {/*        files.map((file,index)=>(*/}
+            {/*            <ListItem key={index} onClick={()=>{*/}
+            {/*                getFile(file).then((data)=>{*/}
+            {/*                    onFileSelected(data);*/}
+            {/*                    setOpen(false);*/}
+            {/*                });*/}
+            {/*            }}>*/}
+            {/*                <ListItemText primary={file} />*/}
+            {/*            </ListItem>*/}
+            {/*        ))*/}
+            {/*    }*/}
 
-            </List>
+            {/*</List>*/}
         </Dialog>
     )
 
